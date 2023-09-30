@@ -1,16 +1,18 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    
     [SerializeField]
     private float speed = 10.0f;
     [SerializeField]
     private float maxSmoothSpeed;
     [SerializeField]
     private Rigidbody rb;
-    private Vector3 movement;
     
-
     private void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
@@ -18,25 +20,32 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleMovement(movement);
+        MovePlayer();
     }
-
-    private void Update()
+    
+    private void MovePlayer()
     {
-        movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-    }
+            float moveInputHorizontal = Input.GetAxis("Horizontal");
+            float moveInputVertical = Input.GetAxis("Vertical");
+            Vector3 cameraForward = Camera.main.transform.forward;
+            Vector3 cameraRight = Camera.main.transform.right;
+            
+            cameraForward.y = 0;
+            cameraRight.y = 0;
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+            
+            Vector3 movement = cameraRight * moveInputHorizontal + cameraForward * moveInputVertical;
+            movement.Normalize();
+            
+            rb.MovePosition(transform.position + movement * (speed * Time.deltaTime));
+            
+            if (movement.magnitude >= 0.1f)
+            {
+                float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+                float smooth = Mathf.SmoothDampAngle(transform.eulerAngles.y, angle, ref maxSmoothSpeed, Time.deltaTime);
 
-
-    private void HandleMovement(Vector3 direction)
-    {
-        rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
-
-        if (direction.magnitude >= 0.1f)
-        {
-            float Angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-            float Smooth = Mathf.SmoothDampAngle(transform.eulerAngles.y, Angle, ref maxSmoothSpeed, Time.deltaTime);
-
-            transform.rotation = Quaternion.Euler(0, Smooth, 0);
-        }
+                transform.rotation = Quaternion.Euler(0, smooth, 0);
+            }
     }
 }
