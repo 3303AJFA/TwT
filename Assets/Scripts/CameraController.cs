@@ -6,32 +6,36 @@ public class CameraController : MonoBehaviour
     
     [SerializeField] private float smoothSpeed;
     [SerializeField] private float movementTime;
-    [SerializeField] private float rotationAmount;
-
+    [SerializeField] private float keyboardRotationAmount;
+    [SerializeField] private float mouseRotationAmount;
     [SerializeField] private Vector3 offset;
     
     void FixedUpdate()
     {
-        float rotateInput = Input.GetAxis("RotateCamera");
-
-        RotateCamera(rotateInput);
+        float keyboardRotateInput = Input.GetAxis("RotateCamera");
+        float mouseRotateInput = Input.GetAxis("Mouse X");
+        RotateCamera(keyboardRotateInput);
+        HandleRotationInput(mouseRotateInput);
         HandleMovementInput();
         
         Vector3 desiredPosition = target.position + offset;
         transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        
     }
 
     private void RotateCamera(float rotationInput)
     {
-        transform.RotateAround(target.position, Vector3.up, rotationInput * rotationAmount * Time.deltaTime);
+        transform.RotateAround(target.position, Vector3.up, rotationInput * keyboardRotationAmount * Time.fixedDeltaTime);
+    }
+    private void HandleRotationInput(float rotationInput)
+    {
+        if (Input.GetMouseButton(1))
+        {
+            transform.RotateAround(target.position, Vector3.up, rotationInput * mouseRotationAmount * Time.fixedDeltaTime);
+        }
     }
     
     private void HandleMovementInput()
     {
-        transform.position = Vector3.Lerp(transform.position, offset, Time.deltaTime * movementTime);
-        /*transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * movementTime);*/
+        transform.position = Vector3.Lerp(transform.position, offset, Time.fixedDeltaTime * movementTime);
     }
-    
-
 }

@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Dash",
+                    "type": "Button",
+                    "id": "a8b29db1-0286-4986-b39f-f99a94ba7e96",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -82,7 +91,7 @@
                 },
                 {
                     "name": "Axis",
-                    "id": "5ce06a8d-45e8-463b-9bbe-445e373b468a",
+                    "id": "acac88c5-4497-43bd-a4a9-d5cfd395ca8f",
                     "path": "3DVector",
                     "interactions": "",
                     "processors": "",
@@ -92,8 +101,8 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "left",
-                    "id": "83b703b3-c9eb-4e55-adbf-9586b0eb32b8",
+                    "name": "Up",
+                    "id": "f86d1731-a888-4a11-b575-348d0598354c",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
@@ -103,8 +112,8 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "right",
-                    "id": "05dd265b-ff27-4d2e-96ff-b0fbf2c925ee",
+                    "name": "Down",
+                    "id": "2cc1f7b3-3b7c-4279-bc0b-b23128e21440",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
@@ -112,6 +121,17 @@
                     "action": "RotateCamera",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "1b01f852-1788-4205-92ce-14c805590355",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
