@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashCooldown;
     private bool _isDashing;
     private float _lastDashTime;
-    private Vector3 _dashDirection;
     
     private void Awake()
     {
@@ -36,12 +35,7 @@ public class PlayerMovement : MonoBehaviour
     public void Dash(InputAction.CallbackContext context)
     {
         if (context.performed && !_isDashing && CanDash())
-        {
-            _dashDirection = transform.forward;
-
             StartCoroutine(PerformDash());
-            _lastDashTime = Time.fixedTime;
-        }
     }
     
     private void MovePlayer()
@@ -71,18 +65,18 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator PerformDash()
     {
-        Vector3 targetPosition = transform.position + _dashDirection * dashPower;
+        _lastDashTime = Time.fixedTime;
         _isDashing = true;
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < dashTime)
+        float originalSpeed = speed;
+        
+        while (Time.fixedTime < _lastDashTime + dashTime)
         {
-            transform.position = Vector3.Lerp(transform.position,targetPosition, elapsedTime / dashTime) ;
-            elapsedTime += Time.fixedDeltaTime;
+            speed += dashPower * Time.fixedDeltaTime;
             yield return null;
         }
-        
+
+        speed = originalSpeed;
         _isDashing = false;
+        _lastDashTime = Time.fixedTime;
     }
 }
