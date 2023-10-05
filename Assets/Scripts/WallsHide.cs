@@ -5,7 +5,7 @@ public class WallsHide : MonoBehaviour
     private static int PositionID = Shader.PropertyToID("_Position");
     private static int SizeID = Shader.PropertyToID("_Size");
     
-    [SerializeField] private Material[] wallMaterials = new Material[2];
+    [SerializeField] private Material[] wallMaterials = new Material[4];
     [SerializeField] private Camera _camera;
     [SerializeField] private LayerMask _layerMask;
 
