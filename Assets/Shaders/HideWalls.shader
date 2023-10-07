@@ -5,7 +5,7 @@ Shader "CustomShaders/HideWalls"
         [NoScaleOffset]_MainTexture("MainTexture", 2D) = "white" {}
         _Tint("Tint", Color) = (0, 0, 0, 0)
         _Position("PlayerPosition", Vector) = (0.5, 0.5, 0, 0)
-        _Size("Size", Float) = 1
+        _Size("Size", Range(0, 1)) = 1
         _Smoothness("Smoothness", Range(0, 1)) = 0.5
         _Opacity("Opacity", Range(0, 1)) = 1
         [HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
