@@ -4,13 +4,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private PlayerAnimations _playerAnimations;
     private LookController _lookController;
     
     [Header("Movement Variables")]
-    [SerializeField] private Camera mainCamera;
     [SerializeField] private float speed;
     [SerializeField] private Rigidbody rb;
+    [HideInInspector]
+    public Vector3 mouseDirection = new Vector3(0,0,0); 
     private PlayerInput _playerInput;
     private float _maxSmoothSpeed;
     private float originalSpeed;
@@ -18,18 +18,20 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _movementInput;
     private Vector3 _lastMovementDirection;
     private bool _isWalk;
+    private Camera mainCamera;
 
     [Header("Dash Variables")]
     [SerializeField] private float dashPower;
     [SerializeField] private float dashTime;
     [SerializeField] private float dashCooldown;
+    [SerializeField] private PlayerAnimations _playerAnimations;
     private bool _isDashing;
     private float _lastDashTime;
 
     private void Start()
     {   
+        mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
-        _playerAnimations = GetComponent<PlayerAnimations>();
         _lookController = GetComponent<LookController>();
     }
 
@@ -43,28 +45,30 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        Vector3 cameraForward = mainCamera.transform.forward;
+        //Debug.DrawRay(Camera.main.transform.position, cameraForward*500f, Color.red, 0.0f, true);
+        Vector3 cameraForward = new Vector3(mainCamera.transform.forward.x,0f,mainCamera.transform.forward.z);
         Vector3 cameraRight = mainCamera.transform.right;
 
-        if ((_movementInput.x == 0 && _movementInput.z == 0) && _movement.x != 0 || _movement.z != 0)
+        float angle = Vector3.SignedAngle(this.transform.forward,cameraForward, Vector3.up)*-1f-90f;
+
+        Vector3 dir = new Vector3(Mathf.Cos(angle*Mathf.PI/-180),0f,Mathf.Sin(angle*Mathf.PI/-180));
+
+        if(_movement.x == 0 && _movement.z == 0)
         {
-            _lastMovementDirection = _movement;
+            _playerAnimations.IdleAnimation(dir);
         }
-        
-        cameraForward.y = 0;
+        else
+        {
+        _playerAnimations.WalkAnimation(dir);
+        _playerAnimations.DashAnimation(dir,_isDashing);
+        }
         cameraRight.y = 0;
             
         _movement = cameraRight * _movementInput.x + cameraForward * _movementInput.z;
         if (_movement.magnitude > 1)
             _movement.Normalize();
-        
-        _playerAnimations.IdleAnimation(_lastMovementDirection);
-        _playerAnimations.WalkAnimation(_movement);
-        _playerAnimations.DashAnimation(_movement,_isDashing); 
-        
         MovePlayer(_movement);        
-    }
-
+    }   
     private bool CanDash()
     {
         return Time.time >= _lastDashTime + dashCooldown;

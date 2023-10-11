@@ -8,15 +8,19 @@ namespace Shaders
     {
         private static int SizeID = Shader.PropertyToID("_Size");
         
-        [SerializeField] private Camera _camera;
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private Shader _hideShader;
         
+        private Camera _camera;
         private Dictionary<int, float> _currentSizes = new Dictionary<int, float>();
         private List<int> _activeLayers = new List<int>();
         private List<int> _previousLayers = new List<int>();
         
         private float _transitionDuration = 0.1f;
+
+        private void Start() {
+            _camera = Camera.main;
+        }
             
         private void LateUpdate()
         {

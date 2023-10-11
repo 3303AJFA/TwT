@@ -5,7 +5,8 @@ public class PlayerAnimations : MonoBehaviour
     [SerializeField] private Animator animator;
 
     public void IdleAnimation(Vector3 movement)
-    {
+    {   
+        animator.SetBool("isWalk",false);
         animator.SetFloat("AnimLastMoveX", movement.x);
         animator.SetFloat("AnimLastMoveZ", movement.z);
     }
