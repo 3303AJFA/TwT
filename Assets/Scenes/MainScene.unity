@@ -22856,7 +22856,7 @@ PrefabInstance:
     - target: {fileID: 5342644757887407600, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
         type: 3}
       propertyPath: dashCooldown
-      value: 1.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6887405441073555527, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
         type: 3}
@@ -22922,6 +22922,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Dash
+      objectReference: {fileID: 0}
+    - target: {fileID: 7746624578960884658, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
