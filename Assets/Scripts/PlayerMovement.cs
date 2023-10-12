@@ -65,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
         cameraRight.y = 0;
             
         _movement = cameraRight * _movementInput.x + cameraForward * _movementInput.z;
+        
         if (_movement.magnitude > 1)
             _movement.Normalize();
         MovePlayer(_movement);        
@@ -87,14 +88,6 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer(Vector3 movement)
     {
         rb.MovePosition(rb.position + movement * (speed * Time.fixedDeltaTime));
-
-        /*if (movement.magnitude >= 0.1f)
-        {
-            float angle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
-            float smooth = Mathf.SmoothDampAngle(transform.eulerAngles.y, angle, ref _maxSmoothSpeed, Time.fixedDeltaTime);
-
-            transform.rotation = Quaternion.Euler(0, smooth, 0);
-        }*/
     }
 
     IEnumerator PerformDash()

@@ -1304,6 +1304,18 @@ Rigidbody:
     type: 3}
   m_PrefabInstance: {fileID: 3492111803817283917}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &149531438 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5342644757887407600, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+    type: 3}
+  m_PrefabInstance: {fileID: 3492111803817283917}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149531432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f8c8b27e8cc9c14db4977e223da43d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &150453981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9e214e25afdfc4642827d7a764387acf,
@@ -22831,6 +22843,11 @@ PrefabInstance:
       propertyPath: rb
       value: 
       objectReference: {fileID: 149531436}
+    - target: {fileID: 5342644757887407600, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+        type: 3}
+      propertyPath: dashCooldown
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6887405441073555527, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22886,6 +22903,16 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 170594989}
+    - target: {fileID: 7436839075595502121, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 149531438}
+    - target: {fileID: 7436839075595502121, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Dash
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
