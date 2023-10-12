@@ -5,26 +5,28 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     private LookController _lookController;
+    [SerializeField] private PlayerAnimations _playerAnimations;
     
     [Header("Movement Variables")]
     [SerializeField] private float speed;
-    [SerializeField] private Rigidbody rb;
-    [HideInInspector]
-    public Vector3 mouseDirection = new Vector3(0,0,0); 
+    private Rigidbody rb;
+    public Vector3 mouseDirection = new Vector3(0,0,0);
+    private Vector3 dir;
     private PlayerInput _playerInput;
     private float _maxSmoothSpeed;
     private float originalSpeed;
     private Vector3 _movement;
     private Vector3 _movementInput;
-    private Vector3 _lastMovementDirection;
     private bool _isWalk;
     private Camera mainCamera;
+    private Vector3 cameraForward;
+    private Vector3 cameraRight;
+    private Vector3 lastMovementDirection;
 
     [Header("Dash Variables")]
-    [SerializeField] private float dashPower;
+    [SerializeField] private float dashSpeed;
     [SerializeField] private float dashTime;
     [SerializeField] private float dashCooldown;
-    [SerializeField] private PlayerAnimations _playerAnimations;
     private bool _isDashing;
     private float _lastDashTime;
 
@@ -46,12 +48,12 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         //Debug.DrawRay(Camera.main.transform.position, cameraForward*500f, Color.red, 0.0f, true);
-        Vector3 cameraForward = new Vector3(mainCamera.transform.forward.x,0f,mainCamera.transform.forward.z);
-        Vector3 cameraRight = mainCamera.transform.right;
+        cameraForward = new Vector3(mainCamera.transform.forward.x,0f,mainCamera.transform.forward.z);
+        cameraRight = mainCamera.transform.right;
 
         float angle = Vector3.SignedAngle(this.transform.forward,cameraForward, Vector3.up)*-1f-90f;
 
-        Vector3 dir = new Vector3(Mathf.Cos(angle*Mathf.PI/-180),0f,Mathf.Sin(angle*Mathf.PI/-180));
+        dir = new Vector3(Mathf.Cos(angle*Mathf.PI/-180),0f,Mathf.Sin(angle*Mathf.PI/-180));
 
         if(_movement.x == 0 && _movement.z == 0)
         {
@@ -59,16 +61,24 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-        _playerAnimations.WalkAnimation(dir);
-        _playerAnimations.DashAnimation(dir,_isDashing);
+            _playerAnimations.WalkAnimation(dir);
+            _playerAnimations.DashAnimation(dir,_isDashing);
         }
+        
         cameraRight.y = 0;
             
         _movement = cameraRight * _movementInput.x + cameraForward * _movementInput.z;
         
         if (_movement.magnitude > 1)
             _movement.Normalize();
-        MovePlayer(_movement);        
+        
+        if (!_isDashing)
+        {
+            if (_movement.magnitude > 0)
+                lastMovementDirection = _movement.normalized;
+
+            MovePlayer();
+        }       
     }   
     private bool CanDash()
     {
@@ -77,31 +87,31 @@ public class PlayerMovement : MonoBehaviour
     
     public void Dash(InputAction.CallbackContext context)
     {
-        if (context.performed && !_isDashing && CanDash())
+        if ((context.performed && !_isDashing && CanDash()) && lastMovementDirection != Vector3.zero)
         {
-            Debug.Log("Dash!!!");
-            _isDashing = true;
+            //Debug.Log("Dash!!!");
             StartCoroutine(PerformDash());
         }
     }
     
-    private void MovePlayer(Vector3 movement)
+    private void MovePlayer()
     {
-        rb.MovePosition(rb.position + movement * (speed * Time.fixedDeltaTime));
+        rb.MovePosition(rb.position + _movement * (speed * Time.fixedDeltaTime));
     }
 
     IEnumerator PerformDash()
     {
         _lastDashTime = Time.fixedTime;
-        originalSpeed = speed;
+        Vector3 dashDirection = lastMovementDirection.normalized;
+        
+        _isDashing = true;
         
         while (Time.fixedTime < _lastDashTime + dashTime)
         {
-            speed += dashPower * Time.fixedDeltaTime;
+            rb.MovePosition(transform.position + dashDirection * dashSpeed * Time.fixedDeltaTime);
             yield return null;
         }
-
-        speed = originalSpeed;
+        
         _isDashing = false;
         _lastDashTime = Time.fixedTime;
     }

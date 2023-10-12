@@ -22845,8 +22845,18 @@ PrefabInstance:
       objectReference: {fileID: 149531436}
     - target: {fileID: 5342644757887407600, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
         type: 3}
-      propertyPath: dashCooldown
+      propertyPath: dashTime
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5342644757887407600, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+        type: 3}
+      propertyPath: dashSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5342644757887407600, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+        type: 3}
+      propertyPath: dashCooldown
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6887405441073555527, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
         type: 3}
