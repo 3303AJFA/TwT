@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -89,9 +90,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if ((context.performed && !_isDashing && CanDash()) && lastMovementDirection != Vector3.zero)
         {
-            //Debug.Log("Dash!!!");
-            StartCoroutine(PerformDash());
+            Debug.Log("Dash!!!");
+            if (_movement.magnitude > 0.01f)
+            {
+                
+                StartCoroutine(PerformDash());
+                
+            }
+            Debug.Log("Dash END");
         }
+        
     }
     
     private void MovePlayer()
@@ -103,8 +111,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _lastDashTime = Time.fixedTime;
         Vector3 dashDirection = lastMovementDirection.normalized;
-        
         _isDashing = true;
+        
         
         while (Time.fixedTime < _lastDashTime + dashTime)
         {
@@ -113,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
         _isDashing = false;
+        _playerAnimations.DashAnimation(dir,_isDashing);
         _lastDashTime = Time.fixedTime;
     }
 }
