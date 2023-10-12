@@ -32,13 +32,13 @@ public class LookController : MonoBehaviour
         if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, groundMask))
         {
             
-            Debug.Log("The Raycast hit something");
+            //Debug.Log("The Raycast hit something");
             playerMovement.mouseDirection = hitInfo.point;
             return (success: true, position: hitInfo.point);
         }
         else
         {
-            Debug.Log("The Raycast did not hit anything");
+            //Debug.Log("The Raycast did not hit anything");
             return (success: false, position: Vector3.zero);
         }
     }

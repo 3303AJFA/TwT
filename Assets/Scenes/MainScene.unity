@@ -1292,6 +1292,18 @@ Transform:
   - {fileID: 1752956500}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &149531432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4033969414946178931, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+    type: 3}
+  m_PrefabInstance: {fileID: 3492111803817283917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &149531436 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 9124729758320007389, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
+    type: 3}
+  m_PrefabInstance: {fileID: 3492111803817283917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &150453981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9e214e25afdfc4642827d7a764387acf,
@@ -2011,7 +2023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d5af847c2f7524cbfe90a7f6c7544f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 149531432}
   smoothSpeed: 1
   movementTime: 10
   keyboardRotationAmount: 100
@@ -22818,7 +22830,7 @@ PrefabInstance:
         type: 3}
       propertyPath: rb
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 149531436}
     - target: {fileID: 6887405441073555527, guid: 06ad75eddaa6f0e50aa63402d5cdc328,
         type: 3}
       propertyPath: m_LocalPosition.x
