@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class LookController : MonoBehaviour
 {
-    private PlayerMovement playerMovement;
+    private PlayerController _playerController;
     private Camera mainCamera;
 
     [SerializeField] private LayerMask groundMask;
 
     private void Start() {
         mainCamera = Camera.main;
-        playerMovement = this.GetComponent<PlayerMovement>();
+        _playerController = GetComponent<PlayerController>();
     }
 
     public void Aim()
@@ -33,7 +33,7 @@ public class LookController : MonoBehaviour
         {
             
             //Debug.Log("The Raycast hit something");
-            playerMovement.mouseDirection = hitInfo.point;
+            _playerController.mouseDirection = hitInfo.point;
             return (success: true, position: hitInfo.point);
         }
         else
