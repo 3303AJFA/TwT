@@ -15,7 +15,7 @@ public class DashController : MonoBehaviour
     {
         _playerController = GetComponent<PlayerController>();
     }
-    
+
     private bool CanDash()
     {
         return Time.time >= _lastDashTime + dashCooldown;
@@ -30,13 +30,13 @@ public class DashController : MonoBehaviour
             {
                 
                 StartCoroutine(PerformDash());
-                
             }
+                
             Debug.Log("Dash END");
         }
         
     }
-    
+
     IEnumerator PerformDash()
     {
         _lastDashTime = Time.fixedTime;
