@@ -178,7 +178,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8083784076259767840}
         m_TargetAssemblyTypeName: ActionController, Assembly-CSharp
-        m_MethodName: Action
+        m_MethodName: GrabAndDropAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -190,6 +190,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0f957de3-46f3-4dae-b6f5-aa2c9507b8da
     m_ActionName: Player/Action[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8083784076259767840}
+        m_TargetAssemblyTypeName: ActionController, Assembly-CSharp
+        m_MethodName: PushAction
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: aea8fe65-dbe5-468b-8565-4089625ac7c4
+    m_ActionName: Player/PushAction[/Keyboard/f]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -301,6 +317,7 @@ MonoBehaviour:
   pickUpRange: 5
   holdParent: {fileID: 2272610464724596748}
   moveForce: 150
+  throwForce: 20
 --- !u!1 &5102348474684566321
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,9 +33,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Action",
+                    "name": "Grab&DropAction",
                     "type": "Button",
                     "id": "0f957de3-46f3-4dae-b6f5-aa2c9507b8da",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PushAction",
+                    "type": "Button",
+                    "id": "aea8fe65-dbe5-468b-8565-4089625ac7c4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -146,10 +155,21 @@
                     "name": "",
                     "id": "4b779b97-d3ea-4206-88f6-0860c784634e",
                     "path": "<Keyboard>/f",
-                    "interactions": "Tap,Hold",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "",
-                    "action": "Action",
+                    "action": "Grab&DropAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6668bdeb-1a83-46e9-b319-54861e977df8",
+                    "path": "<Keyboard>/f",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PushAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -6,7 +6,11 @@ public class ActionController : MonoBehaviour
     [SerializeField] private float pickUpRange;
     [SerializeField] private Transform holdParent;
     [SerializeField] private float moveForce;
+    [SerializeField] private float throwForce;
     private GameObject _heldObject;
+    private RaycastHit hit;
+    
+    private bool _canPush = true;
     
     void Update()
     {
@@ -16,13 +20,12 @@ public class ActionController : MonoBehaviour
         }
     }
 
-    public void Action(InputAction.CallbackContext context)
+    public void GrabAndDropAction(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
             if (_heldObject == null)
             {
-                RaycastHit hit;
                 if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickUpRange))
                 {
                     PickupObject(hit.transform.gameObject);
@@ -32,6 +35,14 @@ public class ActionController : MonoBehaviour
             {
                 DropObject();
             }
+        } 
+    }
+
+    public void PushAction(InputAction.CallbackContext context)
+    {
+        if (context.performed && (_heldObject == null && _canPush))
+        {
+            PushObject();
         }
     }
     
@@ -51,6 +62,7 @@ public class ActionController : MonoBehaviour
             Rigidbody objectRig = pickObject.GetComponent<Rigidbody>();
             objectRig.useGravity = false;
             objectRig.drag = 10;
+            _canPush = false;
             
             objectRig.transform.parent = holdParent;
             _heldObject = pickObject;
@@ -59,11 +71,34 @@ public class ActionController : MonoBehaviour
 
     private void DropObject()
     {
-        Rigidbody heldRig = _heldObject.GetComponent<Rigidbody>();
-        heldRig.useGravity = true;
-        heldRig.drag = 1;
-
-        _heldObject.transform.parent = null;
-        _heldObject = null;
+            Rigidbody heldRig = _heldObject.GetComponent<Rigidbody>();
+            heldRig.useGravity = true;
+            heldRig.drag = 1;
+            
+        
+            _heldObject.transform.parent = null;
+            _heldObject = null;
+            _canPush = true;
+        
+    }
+    
+    private void PushObject()
+    {
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickUpRange))
+        {
+            Rigidbody throwRigidbody = hit.transform.gameObject.GetComponent<Rigidbody>();
+            if (throwRigidbody != null)
+            {
+                throwRigidbody.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+            }
+            else
+            {
+                Debug.LogWarning("The object hit does not have a Rigidbody component.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No object hit by the Raycast.");
+        }
     }
 }
