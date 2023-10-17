@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ActionController : MonoBehaviour
 {
@@ -12,7 +10,15 @@ public class ActionController : MonoBehaviour
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (_heldObject != null)
+        {
+            MoveObject();
+        }
+    }
+
+    public void Action(InputAction.CallbackContext context)
+    {
+        if (context.performed)
         {
             if (_heldObject == null)
             {
@@ -26,15 +32,9 @@ public class ActionController : MonoBehaviour
             {
                 DropObject();
             }
-                
-        }
-
-        if (_heldObject != null)
-        {
-            MoveObject();
         }
     }
-
+    
     private void MoveObject()
     {
         if (Vector3.Distance(_heldObject.transform.position, holdParent.position) > 0.1f)
@@ -44,7 +44,7 @@ public class ActionController : MonoBehaviour
         }
     }
 
-    void PickupObject(GameObject pickObject)
+    private void PickupObject(GameObject pickObject)
     {
         if (pickObject.GetComponent<Rigidbody>())
         {
@@ -57,7 +57,7 @@ public class ActionController : MonoBehaviour
         }
     }
 
-    void DropObject()
+    private void DropObject()
     {
         Rigidbody heldRig = _heldObject.GetComponent<Rigidbody>();
         heldRig.useGravity = true;
