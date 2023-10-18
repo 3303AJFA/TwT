@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class ActionController : MonoBehaviour
 {
@@ -7,6 +8,12 @@ public class ActionController : MonoBehaviour
     [SerializeField] private Transform holdParent;
     [SerializeField] private float moveForce;
     [SerializeField] private float throwForce;
+    [SerializeField] private float maxChargeTime;
+    [SerializeField]private Image chargeIndicator;
+
+    private float _currentChargeTime = 0f;
+    private bool _isCharging = false;
+    
     private GameObject _heldObject;
     private RaycastHit hit;
     
@@ -17,6 +24,16 @@ public class ActionController : MonoBehaviour
         if (_heldObject != null)
         {
             MoveObject();
+        }
+        
+        if (_isCharging)
+        {
+            _currentChargeTime += Time.deltaTime; // Обновляем время зарядки
+            UpdateChargeIndicator();
+        }
+        else
+        {
+            UpdateChargeIndicator();
         }
     }
 
@@ -40,9 +57,13 @@ public class ActionController : MonoBehaviour
 
     public void PushAction(InputAction.CallbackContext context)
     {
-        if (context.performed && (_heldObject == null && _canPush))
+        if (context.performed && (_heldObject == null && _canPush && !_isCharging))
         {
-            PushObject();
+            StartCharging();
+        }
+        else if (context.canceled && _isCharging)
+        {
+            StopCharging();
         }
     }
     
@@ -89,7 +110,8 @@ public class ActionController : MonoBehaviour
             Rigidbody throwRigidbody = hit.transform.gameObject.GetComponent<Rigidbody>();
             if (throwRigidbody != null)
             {
-                throwRigidbody.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+                float finalThrowForce = CalculateThrowForce();
+                throwRigidbody.AddForce(transform.forward * finalThrowForce, ForceMode.Impulse);
             }
             else
             {
@@ -101,4 +123,29 @@ public class ActionController : MonoBehaviour
             Debug.LogWarning("No object hit by the Raycast.");
         }
     }
+    
+    private float CalculateThrowForce()
+    {
+        return Mathf.Clamp(_currentChargeTime, 0f, maxChargeTime) * throwForce;  // Добавлено: рассчет силы броска на основе зарядки
+    }
+
+    private void StartCharging()
+    {
+        _isCharging = true;
+        _currentChargeTime = 0f;
+    }
+
+    private void StopCharging()
+    {
+        _isCharging = false;
+        PushObject();
+        _currentChargeTime = 0f;
+    }
+    
+    private void UpdateChargeIndicator()
+    {
+        // Обновляем UI элемент зарядки (например, изменяем fillAmount для заполнения круга)
+        chargeIndicator.fillAmount = _currentChargeTime / maxChargeTime;
+    }
+
 }
