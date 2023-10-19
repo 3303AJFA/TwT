@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class ActionController : MonoBehaviour
 {
+    private PlayerController _playerController;
+    
     [SerializeField] private float pickUpRange;
     [SerializeField] private Transform holdParent;
     [SerializeField] private float moveForce;
@@ -18,7 +21,12 @@ public class ActionController : MonoBehaviour
     private RaycastHit hit;
     
     private bool _canPush = true;
-    
+
+    private void Start()
+    {
+        _playerController = GetComponent<PlayerController>();
+    }
+
     void Update()
     {
         if (_heldObject != null)
@@ -83,6 +91,7 @@ public class ActionController : MonoBehaviour
             Rigidbody objectRig = pickObject.GetComponent<Rigidbody>();
             objectRig.useGravity = false;
             objectRig.drag = 10;
+            _playerController.speed /= 2; 
             _canPush = false;
             
             objectRig.transform.parent = holdParent;
@@ -95,7 +104,7 @@ public class ActionController : MonoBehaviour
             Rigidbody heldRig = _heldObject.GetComponent<Rigidbody>();
             heldRig.useGravity = true;
             heldRig.drag = 1;
-            
+            _playerController.speed *= 2;
         
             _heldObject.transform.parent = null;
             _heldObject = null;
