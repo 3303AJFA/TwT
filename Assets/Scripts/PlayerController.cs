@@ -44,40 +44,52 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         //Debug.DrawRay(Camera.main.transform.position, cameraForward*500f, Color.red, 0.0f, true);
-        _cameraForward = new Vector3(_mainCamera.transform.forward.x,0f,_mainCamera.transform.forward.z);
         _cameraRight = _mainCamera.transform.right;
-
-        float angle = Vector3.SignedAngle(this.transform.forward,_cameraForward, Vector3.up)*-1f-90f;
-
-        dir = new Vector3(Mathf.Cos(angle*Mathf.PI/-180),0f,Mathf.Sin(angle*Mathf.PI/-180));
-        
         _cameraRight.y = 0;
         
-        if(movement.x == 0 && movement.z == 0)
+        movement = _cameraRight * _movementInput.x + _cameraForward * _movementInput.z;
+
+        if(isDashing){
+            playerAnimations.DashAnimation(FrontDir2Anim(movement),isDashing);
+        }
+        else if(movement.x == 0 && movement.z == 0)
         { 
-            playerAnimations.IdleAnimation(dir);
+            playerAnimations.IdleAnimation(Sight2Anim());
         }
         else
         {
-            playerAnimations.WalkAnimation(dir);
-            playerAnimations.DashAnimation(dir,isDashing);
+            playerAnimations.WalkAnimation(Sight2Anim());
         }
-        
-        movement = _cameraRight * _movementInput.x + _cameraForward * _movementInput.z;
-        
         if (movement.magnitude > 1)
             movement.Normalize();
-        
         if (!isDashing)
         {
             if (movement.magnitude > 0)
                 lastMovementDirection = movement.normalized;
 
             _playerMovement.MovePlayer();
-        }       
-    }   
+        }    
+    }  
     
+    private Vector3 Sight2Anim(){
+        _cameraForward = new Vector3(_mainCamera.transform.forward.x,0f,_mainCamera.transform.forward.z);
+        
+        float angle = Vector3.SignedAngle(this.transform.forward,_cameraForward, Vector3.up)*-1f-90f;
+        
+        dir = new Vector3(Mathf.Cos(angle*Mathf.PI/-180),0f,Mathf.Sin(angle*Mathf.PI/-180));
+        
+        return dir;
+    }
     
+    private Vector3 FrontDir2Anim(Vector3 frontMovement){
+        _cameraForward = new Vector3(_mainCamera.transform.forward.x,0f,_mainCamera.transform.forward.z);
+        
+        float angle = Vector3.SignedAngle(frontMovement,_cameraForward, Vector3.up)*-1f-90f;
+        
+        dir = new Vector3(Mathf.Cos(angle*Mathf.PI/-180),0f,Mathf.Sin(angle*Mathf.PI/-180));
+        
+        return dir;
+    }
     
 
     
