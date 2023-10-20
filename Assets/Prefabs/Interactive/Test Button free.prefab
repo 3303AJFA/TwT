@@ -16,7 +16,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.91
+      value: 1.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
         type: 3}
@@ -58,6 +58,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -5568371526223589888, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: -2577548232221058511, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -67,6 +77,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Test Button free
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
         type: 3}
@@ -81,6 +96,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5738840422021429758}
+    - targetCorrespondingSourceObject: {fileID: -5568371526223589888, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7805330199846375036}
     - targetCorrespondingSourceObject: {fileID: -5568371526223589888, guid: 3b40fb7c2192b094dad0442e92fb2b5e,
         type: 3}
       insertIndex: -1
@@ -107,13 +126,40 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2534964839176971238, guid: 3b40fb7c2192b094dad0442e92fb2b5e, type: 3}
+--- !u!54 &7805330199846375036
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6097674427355175103}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!114 &7605407302720008060
 MonoBehaviour:
   m_ObjectHideFlags: 0

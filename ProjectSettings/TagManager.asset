@@ -7,7 +7,7 @@ TagManager:
   - Walls
   - Wall1
   - Wall2
-  - spheremask
+  - Interactive
   layers:
   - Default
   - TransparentFX
@@ -19,7 +19,7 @@ TagManager:
   - Player
   - Wall1
   - Wall2
-  - 
+  - Button
   - 
   - 
   - 

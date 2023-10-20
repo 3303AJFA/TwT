@@ -20,7 +20,6 @@ public class ActionController : MonoBehaviour
     private GameObject _heldObject;
     private RaycastHit hit;
     
-    private bool _canPush = true;
 
     private void Start()
     {
@@ -52,8 +51,9 @@ public class ActionController : MonoBehaviour
             if (_heldObject == null)
             {
                 if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickUpRange))
-                {
-                    PickupObject(hit.transform.gameObject);
+                {   
+                    if(hit.collider.tag == "Interactive")
+                        PickupObject(hit.transform.gameObject);
                 }
             }
             else
@@ -65,7 +65,7 @@ public class ActionController : MonoBehaviour
 
     public void PushAction(InputAction.CallbackContext context)
     {
-        if (context.performed && (_heldObject == null && _canPush && !_isCharging))
+        if (context.performed && (_heldObject != null && !_isCharging))
         {
             StartCharging();
         }
@@ -92,7 +92,6 @@ public class ActionController : MonoBehaviour
             objectRig.useGravity = false;
             objectRig.drag = 10;
             _playerController.speed /= 2; 
-            _canPush = false;
             
             objectRig.transform.parent = holdParent;
             _heldObject = pickObject;
@@ -108,8 +107,6 @@ public class ActionController : MonoBehaviour
         
             _heldObject.transform.parent = null;
             _heldObject = null;
-            _canPush = true;
-        
     }
     
     private void PushObject()
@@ -147,6 +144,7 @@ public class ActionController : MonoBehaviour
     private void StopCharging()
     {
         _isCharging = false;
+        DropObject();
         PushObject();
         _currentChargeTime = 0f;
     }
