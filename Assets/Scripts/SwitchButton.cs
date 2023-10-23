@@ -12,11 +12,11 @@ public class SwitchButton : MonoBehaviour
     {
         _originalPosition = transform.position;
     }
-    
+
 
     private void OnCollisionStay(Collision collison)
     {
-        if ((collison.collider.tag == "Player" || collison.collider.tag == "Interactive") && transform.position.y >= _originalPosition.y - 0.5f)
+        if ((collison.collider.tag == "Player" || collison.collider.tag == "Interactive" || collison.collider.tag == "Clone") && transform.position.y >= _originalPosition.y - 0.5f)
         {
             transform.Translate(Vector3.forward * (-Time.fixedDeltaTime) * moveDuration, Space.Self);
         }
@@ -24,7 +24,7 @@ public class SwitchButton : MonoBehaviour
     
     private void OnCollisionExit(Collision collison)
     {
-        if (collison.collider.tag == "Player" || collison.collider.tag == "Interactive")
+        if (collison.collider.tag == "Player" || collison.collider.tag == "Interactive" || collison.collider.tag == "Clone")
         {
             _startTime = Time.time;
             StartCoroutine(MoveToTargetY());

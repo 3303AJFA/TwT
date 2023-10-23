@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 1465499567656068548}
   - component: {fileID: 4127151803785998877}
   - component: {fileID: 8175096560472801465}
+  - component: {fileID: 3768450763648479786}
   - component: {fileID: 8773211830836387996}
   - component: {fileID: 181890312290337865}
   - component: {fileID: 7807284924649553048}
@@ -296,6 +297,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: aea8fe65-dbe5-468b-8565-4089625ac7c4
     m_ActionName: Player/PushAction[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3768450763648479786}
+        m_TargetAssemblyTypeName: CloneController, Assembly-CSharp
+        m_MethodName: OnLeftMouseButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: bf99e41b-bbd8-44e3-be59-a365650a19a9
+    m_ActionName: Player/LCM[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3768450763648479786}
+        m_TargetAssemblyTypeName: CloneController, Assembly-CSharp
+        m_MethodName: OnRightMouseButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 29a36803-41a0-4c86-ab7b-0e675acf2679
+    m_ActionName: Player/RCM[/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -336,6 +369,21 @@ MonoBehaviour:
   dashSpeed: 13
   dashTime: 1
   dashCooldown: 1
+--- !u!114 &3768450763648479786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4943259574465847454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da79a2f0c8b0d347b41d41f86ad6132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerClone: {fileID: 4943259574465847454, guid: fb7391f3e96fd7d4da6cce302f6af600,
+    type: 3}
+  rbPlayer: {fileID: 991910077997006640}
 --- !u!114 &8773211830836387996
 MonoBehaviour:
   m_ObjectHideFlags: 0

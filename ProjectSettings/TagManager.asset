@@ -8,6 +8,7 @@ TagManager:
   - Wall1
   - Wall2
   - Interactive
+  - Clone
   layers:
   - Default
   - TransparentFX
