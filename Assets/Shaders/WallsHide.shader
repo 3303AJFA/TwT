@@ -1,13 +1,14 @@
-Shader "CustomShaders/HideWalls"
+Shader "CustomShaders/WallsHide"
 {
     Properties
     {
         [NoScaleOffset]_MainTexture("MainTexture", 2D) = "white" {}
         _Tint("Tint", Color) = (0, 0, 0, 0)
         _Position("PlayerPosition", Vector) = (0.5, 0.5, 0, 0)
-        _Size("Size", Range(0, 1)) = 1
-        _Smoothness("Smoothness", Range(0, 1)) = 0.5
-        _Opacity("Opacity", Range(0, 1)) = 1
+        _Size("Size", Float) = 1
+        _Opacity("Opacity", Range(0, 1)) = 0
+        _NoiseScale("NoiseScale", Float) = 500
+        _NoiseStrength("NoiseStrength", Float) = 2
         [HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
         [HideInInspector]_QueueControl("_QueueControl", Float) = -1
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
@@ -298,8 +299,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -309,7 +311,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -325,6 +327,46 @@ Shader "CustomShaders/HideWalls"
         // Graph Functions
         
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
+        {
+            Out = A * B;
+        }
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
         {
             Out = A * B;
         }
@@ -357,11 +399,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -443,7 +480,12 @@ Shader "CustomShaders/HideWalls"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -471,7 +513,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -832,8 +874,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -843,7 +886,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -859,6 +902,46 @@ Shader "CustomShaders/HideWalls"
         // Graph Functions
         
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
+        {
+            Out = A * B;
+        }
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
         {
             Out = A * B;
         }
@@ -891,11 +974,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -977,7 +1055,12 @@ Shader "CustomShaders/HideWalls"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -1005,7 +1088,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -1135,7 +1218,9 @@ Shader "CustomShaders/HideWalls"
         #define _NORMAL_DROPOFF_TS 1
         #define ATTRIBUTES_NEED_NORMAL
         #define ATTRIBUTES_NEED_TANGENT
+        #define ATTRIBUTES_NEED_TEXCOORD0
         #define VARYINGS_NEED_NORMAL_WS
+        #define VARYINGS_NEED_TEXCOORD0
         #define FEATURES_GRAPH_VERTEX
         /* WARNING: $splice Could not find named fragment 'PassInstancing' */
         #define SHADERPASS SHADERPASS_SHADOWCASTER
@@ -1167,6 +1252,7 @@ Shader "CustomShaders/HideWalls"
              float3 positionOS : POSITION;
              float3 normalOS : NORMAL;
              float4 tangentOS : TANGENT;
+             float4 uv0 : TEXCOORD0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : INSTANCEID_SEMANTIC;
             #endif
@@ -1175,6 +1261,7 @@ Shader "CustomShaders/HideWalls"
         {
              float4 positionCS : SV_POSITION;
              float3 normalWS;
+             float4 texCoord0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -1192,6 +1279,7 @@ Shader "CustomShaders/HideWalls"
         {
              float2 NDCPosition;
              float2 PixelPosition;
+             float4 uv0;
         };
         struct VertexDescriptionInputs
         {
@@ -1202,7 +1290,8 @@ Shader "CustomShaders/HideWalls"
         struct PackedVaryings
         {
              float4 positionCS : SV_POSITION;
-             float3 normalWS : INTERP0;
+             float4 texCoord0 : INTERP0;
+             float3 normalWS : INTERP1;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -1222,6 +1311,7 @@ Shader "CustomShaders/HideWalls"
             PackedVaryings output;
             ZERO_INITIALIZE(PackedVaryings, output);
             output.positionCS = input.positionCS;
+            output.texCoord0.xyzw = input.texCoord0;
             output.normalWS.xyz = input.normalWS;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
@@ -1242,6 +1332,7 @@ Shader "CustomShaders/HideWalls"
         {
             Varyings output;
             output.positionCS = input.positionCS;
+            output.texCoord0 = input.texCoord0.xyzw;
             output.normalWS = input.normalWS.xyz;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
@@ -1268,8 +1359,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -1279,7 +1371,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -1293,6 +1385,46 @@ Shader "CustomShaders/HideWalls"
         #endif
         
         // Graph Functions
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
         
         void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
         {
@@ -1322,11 +1454,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -1393,7 +1520,12 @@ Shader "CustomShaders/HideWalls"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -1421,7 +1553,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -1480,6 +1612,7 @@ Shader "CustomShaders/HideWalls"
             output.NDCPosition = output.PixelPosition.xy / _ScaledScreenParams.xy;
             output.NDCPosition.y = 1.0f - output.NDCPosition.y;
         
+            output.uv0 = input.texCoord0;
         #if defined(SHADER_STAGE_FRAGMENT) && defined(VARYINGS_NEED_CULLFACE)
         #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN output.FaceSign =                    IS_FRONT_VFACE(input.cullFace, true, false);
         #else
@@ -1541,9 +1674,11 @@ Shader "CustomShaders/HideWalls"
         #define _NORMAL_DROPOFF_TS 1
         #define ATTRIBUTES_NEED_NORMAL
         #define ATTRIBUTES_NEED_TANGENT
+        #define ATTRIBUTES_NEED_TEXCOORD0
         #define ATTRIBUTES_NEED_TEXCOORD1
         #define VARYINGS_NEED_NORMAL_WS
         #define VARYINGS_NEED_TANGENT_WS
+        #define VARYINGS_NEED_TEXCOORD0
         #define FEATURES_GRAPH_VERTEX
         /* WARNING: $splice Could not find named fragment 'PassInstancing' */
         #define SHADERPASS SHADERPASS_DEPTHNORMALS
@@ -1576,6 +1711,7 @@ Shader "CustomShaders/HideWalls"
              float3 positionOS : POSITION;
              float3 normalOS : NORMAL;
              float4 tangentOS : TANGENT;
+             float4 uv0 : TEXCOORD0;
              float4 uv1 : TEXCOORD1;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : INSTANCEID_SEMANTIC;
@@ -1586,6 +1722,7 @@ Shader "CustomShaders/HideWalls"
              float4 positionCS : SV_POSITION;
              float3 normalWS;
              float4 tangentWS;
+             float4 texCoord0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -1604,6 +1741,7 @@ Shader "CustomShaders/HideWalls"
              float3 TangentSpaceNormal;
              float2 NDCPosition;
              float2 PixelPosition;
+             float4 uv0;
         };
         struct VertexDescriptionInputs
         {
@@ -1615,7 +1753,8 @@ Shader "CustomShaders/HideWalls"
         {
              float4 positionCS : SV_POSITION;
              float4 tangentWS : INTERP0;
-             float3 normalWS : INTERP1;
+             float4 texCoord0 : INTERP1;
+             float3 normalWS : INTERP2;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -1636,6 +1775,7 @@ Shader "CustomShaders/HideWalls"
             ZERO_INITIALIZE(PackedVaryings, output);
             output.positionCS = input.positionCS;
             output.tangentWS.xyzw = input.tangentWS;
+            output.texCoord0.xyzw = input.texCoord0;
             output.normalWS.xyz = input.normalWS;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
@@ -1657,6 +1797,7 @@ Shader "CustomShaders/HideWalls"
             Varyings output;
             output.positionCS = input.positionCS;
             output.tangentWS = input.tangentWS.xyzw;
+            output.texCoord0 = input.texCoord0.xyzw;
             output.normalWS = input.normalWS.xyz;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
@@ -1683,8 +1824,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -1694,7 +1836,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -1708,6 +1850,46 @@ Shader "CustomShaders/HideWalls"
         #endif
         
         // Graph Functions
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
         
         void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
         {
@@ -1737,11 +1919,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -1809,7 +1986,12 @@ Shader "CustomShaders/HideWalls"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -1837,7 +2019,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -1898,6 +2080,7 @@ Shader "CustomShaders/HideWalls"
             output.NDCPosition = output.PixelPosition.xy / _ScaledScreenParams.xy;
             output.NDCPosition.y = 1.0f - output.NDCPosition.y;
         
+            output.uv0 = input.texCoord0;
         #if defined(SHADER_STAGE_FRAGMENT) && defined(VARYINGS_NEED_CULLFACE)
         #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN output.FaceSign =                    IS_FRONT_VFACE(input.cullFace, true, false);
         #else
@@ -2107,8 +2290,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -2118,7 +2302,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -2134,6 +2318,46 @@ Shader "CustomShaders/HideWalls"
         // Graph Functions
         
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
+        {
+            Out = A * B;
+        }
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
         {
             Out = A * B;
         }
@@ -2166,11 +2390,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -2248,7 +2467,12 @@ Shader "CustomShaders/HideWalls"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -2276,7 +2500,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -2396,6 +2620,8 @@ Shader "CustomShaders/HideWalls"
         #define _NORMAL_DROPOFF_TS 1
         #define ATTRIBUTES_NEED_NORMAL
         #define ATTRIBUTES_NEED_TANGENT
+        #define ATTRIBUTES_NEED_TEXCOORD0
+        #define VARYINGS_NEED_TEXCOORD0
         #define FEATURES_GRAPH_VERTEX
         /* WARNING: $splice Could not find named fragment 'PassInstancing' */
         #define SHADERPASS SHADERPASS_DEPTHONLY
@@ -2428,6 +2654,7 @@ Shader "CustomShaders/HideWalls"
              float3 positionOS : POSITION;
              float3 normalOS : NORMAL;
              float4 tangentOS : TANGENT;
+             float4 uv0 : TEXCOORD0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : INSTANCEID_SEMANTIC;
             #endif
@@ -2435,6 +2662,7 @@ Shader "CustomShaders/HideWalls"
         struct Varyings
         {
              float4 positionCS : SV_POSITION;
+             float4 texCoord0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -2452,6 +2680,7 @@ Shader "CustomShaders/HideWalls"
         {
              float2 NDCPosition;
              float2 PixelPosition;
+             float4 uv0;
         };
         struct VertexDescriptionInputs
         {
@@ -2462,6 +2691,7 @@ Shader "CustomShaders/HideWalls"
         struct PackedVaryings
         {
              float4 positionCS : SV_POSITION;
+             float4 texCoord0 : INTERP0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -2481,6 +2711,7 @@ Shader "CustomShaders/HideWalls"
             PackedVaryings output;
             ZERO_INITIALIZE(PackedVaryings, output);
             output.positionCS = input.positionCS;
+            output.texCoord0.xyzw = input.texCoord0;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
             #endif
@@ -2500,6 +2731,7 @@ Shader "CustomShaders/HideWalls"
         {
             Varyings output;
             output.positionCS = input.positionCS;
+            output.texCoord0 = input.texCoord0.xyzw;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
             #endif
@@ -2525,8 +2757,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -2536,7 +2769,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -2550,6 +2783,46 @@ Shader "CustomShaders/HideWalls"
         #endif
         
         // Graph Functions
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
         
         void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
         {
@@ -2579,11 +2852,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -2650,7 +2918,12 @@ Shader "CustomShaders/HideWalls"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -2678,7 +2951,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -2737,6 +3010,7 @@ Shader "CustomShaders/HideWalls"
             output.NDCPosition = output.PixelPosition.xy / _ScaledScreenParams.xy;
             output.NDCPosition.y = 1.0f - output.NDCPosition.y;
         
+            output.uv0 = input.texCoord0;
         #if defined(SHADER_STAGE_FRAGMENT) && defined(VARYINGS_NEED_CULLFACE)
         #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN output.FaceSign =                    IS_FRONT_VFACE(input.cullFace, true, false);
         #else
@@ -2795,6 +3069,8 @@ Shader "CustomShaders/HideWalls"
         #define _NORMAL_DROPOFF_TS 1
         #define ATTRIBUTES_NEED_NORMAL
         #define ATTRIBUTES_NEED_TANGENT
+        #define ATTRIBUTES_NEED_TEXCOORD0
+        #define VARYINGS_NEED_TEXCOORD0
         #define FEATURES_GRAPH_VERTEX
         /* WARNING: $splice Could not find named fragment 'PassInstancing' */
         #define SHADERPASS SHADERPASS_DEPTHONLY
@@ -2827,6 +3103,7 @@ Shader "CustomShaders/HideWalls"
              float3 positionOS : POSITION;
              float3 normalOS : NORMAL;
              float4 tangentOS : TANGENT;
+             float4 uv0 : TEXCOORD0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : INSTANCEID_SEMANTIC;
             #endif
@@ -2834,6 +3111,7 @@ Shader "CustomShaders/HideWalls"
         struct Varyings
         {
              float4 positionCS : SV_POSITION;
+             float4 texCoord0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -2851,6 +3129,7 @@ Shader "CustomShaders/HideWalls"
         {
              float2 NDCPosition;
              float2 PixelPosition;
+             float4 uv0;
         };
         struct VertexDescriptionInputs
         {
@@ -2861,6 +3140,7 @@ Shader "CustomShaders/HideWalls"
         struct PackedVaryings
         {
              float4 positionCS : SV_POSITION;
+             float4 texCoord0 : INTERP0;
             #if UNITY_ANY_INSTANCING_ENABLED
              uint instanceID : CUSTOM_INSTANCE_ID;
             #endif
@@ -2880,6 +3160,7 @@ Shader "CustomShaders/HideWalls"
             PackedVaryings output;
             ZERO_INITIALIZE(PackedVaryings, output);
             output.positionCS = input.positionCS;
+            output.texCoord0.xyzw = input.texCoord0;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
             #endif
@@ -2899,6 +3180,7 @@ Shader "CustomShaders/HideWalls"
         {
             Varyings output;
             output.positionCS = input.positionCS;
+            output.texCoord0 = input.texCoord0.xyzw;
             #if UNITY_ANY_INSTANCING_ENABLED
             output.instanceID = input.instanceID;
             #endif
@@ -2924,8 +3206,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -2935,7 +3218,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -2949,6 +3232,46 @@ Shader "CustomShaders/HideWalls"
         #endif
         
         // Graph Functions
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
         
         void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
         {
@@ -2978,11 +3301,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -3049,7 +3367,12 @@ Shader "CustomShaders/HideWalls"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -3077,7 +3400,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
@@ -3136,6 +3459,7 @@ Shader "CustomShaders/HideWalls"
             output.NDCPosition = output.PixelPosition.xy / _ScaledScreenParams.xy;
             output.NDCPosition.y = 1.0f - output.NDCPosition.y;
         
+            output.uv0 = input.texCoord0;
         #if defined(SHADER_STAGE_FRAGMENT) && defined(VARYINGS_NEED_CULLFACE)
         #define BUILD_SURFACE_DESCRIPTION_INPUTS_OUTPUT_FACESIGN output.FaceSign =                    IS_FRONT_VFACE(input.cullFace, true, false);
         #else
@@ -3332,8 +3656,9 @@ Shader "CustomShaders/HideWalls"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Smoothness;
         float _Opacity;
+        float _NoiseScale;
+        float _NoiseStrength;
         CBUFFER_END
         
         
@@ -3343,7 +3668,7 @@ Shader "CustomShaders/HideWalls"
         SAMPLER(sampler_MainTexture);
         
         // Graph Includes
-        // GraphIncludes: <None>
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Hashes.hlsl"
         
         // -- Property used by ScenePickingPass
         #ifdef SCENEPICKINGPASS
@@ -3359,6 +3684,46 @@ Shader "CustomShaders/HideWalls"
         // Graph Functions
         
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
+        {
+            Out = A * B;
+        }
+        
+        float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
+        {
+            float2 i = floor(uv);
+            float2 f = frac(uv);
+            f = f * f * (3.0 - 2.0 * f);
+            uv = abs(frac(uv) - 0.5);
+            float2 c0 = i + float2(0.0, 0.0);
+            float2 c1 = i + float2(1.0, 0.0);
+            float2 c2 = i + float2(0.0, 1.0);
+            float2 c3 = i + float2(1.0, 1.0);
+            float r0; Hash_Tchou_2_1_float(c0, r0);
+            float r1; Hash_Tchou_2_1_float(c1, r1);
+            float r2; Hash_Tchou_2_1_float(c2, r2);
+            float r3; Hash_Tchou_2_1_float(c3, r3);
+            float bottomOfGrid = lerp(r0, r1, f.x);
+            float topOfGrid = lerp(r2, r3, f.x);
+            float t = lerp(bottomOfGrid, topOfGrid, f.y);
+            return t;
+        }
+        
+        void Unity_SimpleNoise_Deterministic_float(float2 UV, float Scale, out float Out)
+        {
+            float freq, amp;
+            Out = 0.0f;
+            freq = pow(2.0, float(0));
+            amp = pow(0.5, float(3-0));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(1));
+            amp = pow(0.5, float(3-1));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+            freq = pow(2.0, float(2));
+            amp = pow(0.5, float(3-2));
+            Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
         {
             Out = A * B;
         }
@@ -3391,11 +3756,6 @@ Shader "CustomShaders/HideWalls"
         void Unity_Divide_float(float A, float B, out float Out)
         {
             Out = A / B;
-        }
-        
-        void Unity_Multiply_float_float(float A, float B, out float Out)
-        {
-            Out = A * B;
         }
         
         void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
@@ -3472,7 +3832,12 @@ Shader "CustomShaders/HideWalls"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float = _Smoothness;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -3500,7 +3865,7 @@ Shader "CustomShaders/HideWalls"
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
             float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Property_b9ba3dd7f41b456ab5eca695efac4b4c_Out_0_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
+            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
             float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
             float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
             Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
