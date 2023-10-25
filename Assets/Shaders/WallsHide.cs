@@ -13,7 +13,7 @@ namespace Shaders
         
         private Camera _camera;
         private Dictionary<int, float> _currentSizes = new Dictionary<int, float>();
-        private List<int> _activeLayers = new List<int>();
+        private Dictionary<int, GameObject[]> _layerObjects = new Dictionary<int, GameObject[]>();
         private List<int> _previousLayers = new List<int>();
         
         private float _transitionDuration = 0.1f;
@@ -25,18 +25,19 @@ namespace Shaders
         private void LateUpdate()
         {
             RaycastHit[] hits = Physics.RaycastAll(transform.position, _camera.transform.position - transform.position, Mathf.Infinity, _layerMask);
+            
+
+            HashSet<int> activeLayers = new HashSet<int>();
 
             // Process hits
             foreach (var hit in hits)
             {
                 MeshRenderer meshRenderer = hit.transform.GetComponent<MeshRenderer>();
+
                 if (meshRenderer != null && meshRenderer.material.shader == _hideShader)
                 {
                     int layer = hit.transform.gameObject.layer;
-                    if (!_activeLayers.Contains(layer))
-                    {
-                        _activeLayers.Add(layer);
-                    }
+                    activeLayers.Add(layer);
                     ProcessMaterialsInLayer(layer);
                 }
             }
@@ -44,7 +45,7 @@ namespace Shaders
             // Remove inactive layers
             foreach (var layer in _previousLayers)
             {
-                if (!_activeLayers.Contains(layer))
+                if (!activeLayers.Contains(layer))
                 {
                     ApplySmoothSizeValueDown(layer);
                 }
@@ -52,8 +53,7 @@ namespace Shaders
 
             // Update active and previous layers
             _previousLayers.Clear();
-            _previousLayers.AddRange(_activeLayers);
-            _activeLayers.Clear();
+            _previousLayers.AddRange(activeLayers);
         }
     
         private void ProcessMaterialsInLayer(int layer)
@@ -82,6 +82,10 @@ namespace Shaders
     
         private GameObject[] GetObjectsInLayer(int layer)
         {
+            if (_layerObjects.ContainsKey(layer))
+            {
+                return _layerObjects[layer];
+            }
             GameObject[] allObjects = GameObject.FindGameObjectsWithTag("Walls");
             List<GameObject> objectsInLayer = new List<GameObject>();
     
@@ -93,7 +97,8 @@ namespace Shaders
                 }
             }
     
-            return objectsInLayer.ToArray();
+            _layerObjects[layer] = objectsInLayer.ToArray();
+            return _layerObjects[layer];
         }
         
         
