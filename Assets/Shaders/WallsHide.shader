@@ -6,9 +6,9 @@ Shader "CustomShaders/WallsHide"
         _Tint("Tint", Color) = (0, 0, 0, 0)
         _Position("PlayerPosition", Vector) = (0.5, 0.5, 0, 0)
         _Size("Size", Float) = 1
-        _Opacity("Opacity", Range(0, 1)) = 0
-        _NoiseScale("NoiseScale", Float) = 500
-        _NoiseStrength("NoiseStrength", Float) = 2
+        _NoiseScale("NoiseScale", Float) = 100
+        _NoiseStrength("NoiseStrength", Float) = 0.75
+        _AlphaClip("AlphaClip", Range(0, 0.5)) = 0.1
         [HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
         [HideInInspector]_QueueControl("_QueueControl", Float) = -1
         [HideInInspector][NoScaleOffset]unity_Lightmaps("unity_Lightmaps", 2DArray) = "" {}
@@ -299,9 +299,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -329,6 +329,61 @@ Shader "CustomShaders/WallsHide"
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
             Out = A * B;
+        }
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
         }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
@@ -366,64 +421,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -480,12 +480,6 @@ Shader "CustomShaders/WallsHide"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -512,21 +506,26 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
             surface.BaseColor = (_Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4.xyz);
             surface.NormalTS = IN.TangentSpaceNormal;
             surface.Emission = float3(0, 0, 0);
             surface.Metallic = 0;
             surface.Smoothness = 0.5;
             surface.Occlusion = 1;
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -874,9 +873,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -904,6 +903,61 @@ Shader "CustomShaders/WallsHide"
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
             Out = A * B;
+        }
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
         }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
@@ -941,64 +995,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -1055,12 +1054,6 @@ Shader "CustomShaders/WallsHide"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -1087,21 +1080,26 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
             surface.BaseColor = (_Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4.xyz);
             surface.NormalTS = IN.TangentSpaceNormal;
             surface.Emission = float3(0, 0, 0);
             surface.Metallic = 0;
             surface.Smoothness = 0.5;
             surface.Occlusion = 1;
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -1359,9 +1357,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -1385,6 +1383,61 @@ Shader "CustomShaders/WallsHide"
         #endif
         
         // Graph Functions
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
+        }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
         {
@@ -1421,64 +1474,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -1520,12 +1518,6 @@ Shader "CustomShaders/WallsHide"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -1552,15 +1544,20 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -1824,9 +1821,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -1850,6 +1847,61 @@ Shader "CustomShaders/WallsHide"
         #endif
         
         // Graph Functions
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
+        }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
         {
@@ -1886,64 +1938,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -1986,12 +1983,6 @@ Shader "CustomShaders/WallsHide"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -2018,16 +2009,21 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
             surface.NormalTS = IN.TangentSpaceNormal;
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -2290,9 +2286,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -2320,6 +2316,61 @@ Shader "CustomShaders/WallsHide"
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
             Out = A * B;
+        }
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
         }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
@@ -2357,64 +2408,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -2467,12 +2463,6 @@ Shader "CustomShaders/WallsHide"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -2499,17 +2489,22 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
             surface.BaseColor = (_Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4.xyz);
             surface.Emission = float3(0, 0, 0);
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -2757,9 +2752,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -2783,6 +2778,61 @@ Shader "CustomShaders/WallsHide"
         #endif
         
         // Graph Functions
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
+        }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
         {
@@ -2819,64 +2869,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -2918,12 +2913,6 @@ Shader "CustomShaders/WallsHide"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -2950,15 +2939,20 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -3206,9 +3200,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -3232,6 +3226,61 @@ Shader "CustomShaders/WallsHide"
         #endif
         
         // Graph Functions
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
+        }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
         {
@@ -3268,64 +3317,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -3367,12 +3361,6 @@ Shader "CustomShaders/WallsHide"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -3399,15 +3387,20 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
@@ -3656,9 +3649,9 @@ Shader "CustomShaders/WallsHide"
         float4 _Tint;
         float2 _Position;
         float _Size;
-        float _Opacity;
         float _NoiseScale;
         float _NoiseStrength;
+        float _AlphaClip;
         CBUFFER_END
         
         
@@ -3686,6 +3679,61 @@ Shader "CustomShaders/WallsHide"
         void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
             Out = A * B;
+        }
+        
+        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
+        {
+            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
+        }
+        
+        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A + B;
+        }
+        
+        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
+        {
+            Out = UV * Tiling + Offset;
+        }
+        
+        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A - B;
+        }
+        
+        void Unity_Divide_float(float A, float B, out float Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Multiply_float_float(float A, float B, out float Out)
+        {
+            Out = A * B;
+        }
+        
+        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
+        {
+            Out = A / B;
+        }
+        
+        void Unity_Length_float2(float2 In, out float Out)
+        {
+            Out = length(In);
+        }
+        
+        void Unity_OneMinus_float(float In, out float Out)
+        {
+            Out = 1 - In;
+        }
+        
+        void Unity_Saturate_float(float In, out float Out)
+        {
+            Out = saturate(In);
         }
         
         float Unity_SimpleNoise_ValueNoise_Deterministic_float (float2 uv)
@@ -3723,64 +3771,9 @@ Shader "CustomShaders/WallsHide"
             Out += Unity_SimpleNoise_ValueNoise_Deterministic_float(float2(UV.xy*(Scale/freq)))*amp;
         }
         
-        void Unity_Multiply_float_float(float A, float B, out float Out)
+        void Unity_Step_float(float Edge, float In, out float Out)
         {
-            Out = A * B;
-        }
-        
-        void Unity_Remap_float2(float2 In, float2 InMinMax, float2 OutMinMax, out float2 Out)
-        {
-            Out = OutMinMax.x + (In - InMinMax.x) * (OutMinMax.y - OutMinMax.x) / (InMinMax.y - InMinMax.x);
-        }
-        
-        void Unity_Add_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A + B;
-        }
-        
-        void Unity_TilingAndOffset_float(float2 UV, float2 Tiling, float2 Offset, out float2 Out)
-        {
-            Out = UV * Tiling + Offset;
-        }
-        
-        void Unity_Multiply_float2_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A * B;
-        }
-        
-        void Unity_Subtract_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A - B;
-        }
-        
-        void Unity_Divide_float(float A, float B, out float Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Divide_float2(float2 A, float2 B, out float2 Out)
-        {
-            Out = A / B;
-        }
-        
-        void Unity_Length_float2(float2 In, out float Out)
-        {
-            Out = length(In);
-        }
-        
-        void Unity_OneMinus_float(float In, out float Out)
-        {
-            Out = 1 - In;
-        }
-        
-        void Unity_Saturate_float(float In, out float Out)
-        {
-            Out = saturate(In);
-        }
-        
-        void Unity_Smoothstep_float(float Edge1, float Edge2, float In, out float Out)
-        {
-            Out = smoothstep(Edge1, Edge2, In);
+            Out = step(Edge, In);
         }
         
         // Custom interpolators pre vertex
@@ -3832,12 +3825,6 @@ Shader "CustomShaders/WallsHide"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
-            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
-            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
-            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
-            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
-            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
-            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -3864,16 +3851,21 @@ Shader "CustomShaders/WallsHide"
             Unity_OneMinus_float(_Length_b0b7efbb72bc410fb166e929df023674_Out_1_Float, _OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float);
             float _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float;
             Unity_Saturate_float(_OneMinus_af872025e3c540eaa3dbc46d4a537eda_Out_1_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float);
-            float _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float;
-            Unity_Smoothstep_float(0, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float);
-            float _Property_bd9094e9fd51437180156838d125c171_Out_0_Float = _Opacity;
-            float _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float;
-            Unity_Multiply_float_float(_Smoothstep_a4267e1fd20b4b4087b6a24c66e5f640_Out_3_Float, _Property_bd9094e9fd51437180156838d125c171_Out_0_Float, _Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float);
-            float _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            Unity_OneMinus_float(_Multiply_b50b0c5313f84156915fce6259b8520f_Out_2_Float, _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float);
+            float _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float = _NoiseScale;
+            float _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float;
+            Unity_SimpleNoise_Deterministic_float(IN.uv0.xy, _Property_d59fb5e2866e4e9bb40dc19d1ebbf3e4_Out_0_Float, _SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float);
+            float _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float = _NoiseStrength;
+            float _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float;
+            Unity_Multiply_float_float(_SimpleNoise_43c95bf1cc1a4f9f9b18cbcd6f240095_Out_2_Float, _Property_06bae5912bd04592b3044ea4b3f7adc3_Out_0_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float);
+            float _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float;
+            Unity_Multiply_float_float(_Saturate_c04caaf8c17145b688161613b87ac3c5_Out_1_Float, _Multiply_4cef48fdbc22455ab5629e522261bcfd_Out_2_Float, _Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float);
+            float _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float = _AlphaClip;
+            float _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float = _Property_3fd7d3ebe220484da06e5e9a7496747c_Out_0_Float;
+            float _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            Unity_Step_float(_Multiply_0de4b11be43d43319ef7eb86ae97827c_Out_2_Float, _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float, _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float);
             surface.BaseColor = (_Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4.xyz);
-            surface.Alpha = _OneMinus_4e370c25eac9456bbcc87edf46526f3e_Out_1_Float;
-            surface.AlphaClipThreshold = 0;
+            surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
+            surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
         }
         
