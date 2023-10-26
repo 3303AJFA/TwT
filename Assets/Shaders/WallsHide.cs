@@ -33,12 +33,11 @@ namespace Shaders
             foreach (var hit in hits)
             {
                 MeshRenderer meshRenderer = hit.transform.GetComponent<MeshRenderer>();
-
                 if (meshRenderer != null && meshRenderer.material.shader == _hideShader)
                 {
-                    int layer = hit.transform.gameObject.layer;
-                    activeLayers.Add(layer);
-                    ProcessMaterialsInLayer(layer);
+                        int layer = hit.transform.gameObject.layer;
+                        activeLayers.Add(layer);
+                        ProcessMaterialsInLayer(layer);
                 }
             }
 
