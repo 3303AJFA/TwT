@@ -17,6 +17,7 @@ public class ActionController : MonoBehaviour
     private bool _isCharging = false;
     
     private GameObject _heldObject;
+    private Vector3 _holdOffset;
     private RaycastHit hit;
     
 
