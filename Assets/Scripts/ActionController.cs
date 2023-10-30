@@ -42,6 +42,8 @@ public class ActionController : MonoBehaviour
         {
             UpdateChargeIndicator();
         }
+        
+        Debug.DrawRay(transform.position, 2 * (holdParent.position - transform.position), Color.green, pickUpRange);
     }
 
     public void GrabAndDropAction(InputAction.CallbackContext context)
@@ -50,7 +52,7 @@ public class ActionController : MonoBehaviour
         {
             if (_heldObject == null)
             {
-                if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickUpRange))
+                if (Physics.Raycast(transform.position, 2 * (holdParent.position - transform.position), out hit, pickUpRange))
                 {   
                     if(hit.collider.tag == "Interactive")
                         PickupObject(hit.transform.gameObject);
@@ -111,7 +113,7 @@ public class ActionController : MonoBehaviour
     
     private void PushObject()
     {
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickUpRange))
+        if (Physics.Raycast(transform.position, 2 * (holdParent.position - transform.position), out hit, pickUpRange))
         {
             Rigidbody throwRigidbody = hit.transform.gameObject.GetComponent<Rigidbody>();
             if (throwRigidbody != null)
