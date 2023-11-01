@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ActionController : MonoBehaviour
@@ -16,9 +17,11 @@ public class ActionController : MonoBehaviour
     private float _currentChargeTime = 0f;
     private bool _isCharging = false;
     
-    private GameObject _heldObject;
     private Vector3 _holdOffset;
     private RaycastHit hit;
+    
+    [HideInInspector]
+    public GameObject heldObject;
     
 
     private void Start()
@@ -28,7 +31,7 @@ public class ActionController : MonoBehaviour
 
     void Update()
     {
-        if (_heldObject != null)
+        if (heldObject != null)
         {
             MoveObject();
         }
@@ -50,7 +53,7 @@ public class ActionController : MonoBehaviour
     {
         if (context.performed)
         {
-            if (_heldObject == null)
+            if (heldObject == null)
             {
                 if (Physics.Raycast(transform.position, 2 * (holdParent.position - transform.position), out hit, pickUpRange))
                 {   
@@ -67,7 +70,7 @@ public class ActionController : MonoBehaviour
 
     public void PushAction(InputAction.CallbackContext context)
     {
-        if (context.performed && (_heldObject != null && !_isCharging))
+        if (context.performed && (heldObject != null && !_isCharging))
         {
             StartCharging();
         }
@@ -79,10 +82,10 @@ public class ActionController : MonoBehaviour
     
     private void MoveObject()
     {
-        if (Vector3.Distance(_heldObject.transform.position, holdParent.position) > 0.1f)
+        if (Vector3.Distance(heldObject.transform.position, holdParent.position) > 0.1f)
         {
-            Vector3 moveDirection = (holdParent.position - _heldObject.transform.position);
-            _heldObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
+            Vector3 moveDirection = (holdParent.position - heldObject.transform.position);
+            heldObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
         }
     }
 
@@ -96,19 +99,19 @@ public class ActionController : MonoBehaviour
             _playerController.speed /= 2; 
             
             objectRig.transform.parent = holdParent;
-            _heldObject = pickObject;
+            heldObject = pickObject;
         }
     }
 
     private void DropObject()
     {
-            Rigidbody heldRig = _heldObject.GetComponent<Rigidbody>();
+            Rigidbody heldRig = heldObject.GetComponent<Rigidbody>();
             heldRig.useGravity = true;
             heldRig.drag = 1;
             _playerController.speed *= 2;
         
-            _heldObject.transform.parent = null;
-            _heldObject = null;
+            heldObject.transform.parent = null;
+            heldObject = null;
     }
     
     private void PushObject()
