@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1793558182123775071}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 2.5}
+  m_LocalPosition: {x: 0, y: 1, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -452,12 +452,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d5014de3e014141860988586d907e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickUpRange: 2
+  pickUpRange: 3
   holdParent: {fileID: 2272610464724596748}
   moveForce: 150
   throwForce: 20
   maxChargeTime: 1
   chargeIndicator: {fileID: 7447865197722901199}
+  heldObject: {fileID: 0}
 --- !u!1 &5102348474684566321
 GameObject:
   m_ObjectHideFlags: 0
