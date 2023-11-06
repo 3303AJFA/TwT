@@ -9,6 +9,7 @@ TagManager:
   - Wall2
   - Interactive
   - Clone
+  - Ice
   layers:
   - Default
   - TransparentFX
