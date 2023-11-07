@@ -314,6 +314,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 13400000, guid: c57cc1e0d5555098c8887309f1852cc0,
         type: 2}
+    - target: {fileID: 8083784076259767840, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
+      propertyPath: interactiveLayerMask.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
     - target: {fileID: 8175096560472801465, guid: 13c3223ad78751446b568b4891efc7ca,
         type: 3}
       propertyPath: dashSpeed

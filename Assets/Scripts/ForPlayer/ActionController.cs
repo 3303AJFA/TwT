@@ -8,11 +8,12 @@ public class ActionController : MonoBehaviour
     private PlayerController _playerController;
     
     [SerializeField] private float pickUpRange;
+    [SerializeField] private LayerMask interactiveLayerMask;
     [SerializeField] private Transform holdParent;
     [SerializeField] private float moveForce;
     [SerializeField] private float throwForce;
     [SerializeField] private float maxChargeTime;
-    [SerializeField]private Image chargeIndicator;
+    [SerializeField] private Image chargeIndicator;
 
     private float _currentChargeTime = 0f;
     private bool _isCharging = false;
@@ -55,7 +56,7 @@ public class ActionController : MonoBehaviour
         {
             if (heldObject == null)
             {
-                if (Physics.Raycast(transform.position, 2 * (holdParent.position - transform.position), out hit, pickUpRange))
+                if (Physics.Raycast(transform.position, 2 * (holdParent.position - transform.position), out hit, pickUpRange, interactiveLayerMask))
                 {   
                     if(hit.collider.tag == "Interactive")
                         PickupObject(hit.transform.gameObject);
