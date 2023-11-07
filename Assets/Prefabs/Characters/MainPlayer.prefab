@@ -228,6 +228,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8977611576398691931}
     m_Modifications:
+    - target: {fileID: 991910077997006640, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
+      propertyPath: m_Drag
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 991910077997006640, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3239934670983761834, guid: 13c3223ad78751446b568b4891efc7ca,
         type: 3}
       propertyPath: m_LocalScale.x
