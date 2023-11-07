@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class TriggerAreaController : MonoBehaviour
 {
-    [SerializeField] private ActionController actionController;
+    private ActionController _actionController;
+    private GameObject _player;
 
     [SerializeField] private Transform holdParent;
     
     private float _moveForce = 150;
 
+    private void Start()
+    {
+        _player = GameObject.Find("Player");
+        _actionController = _player.GetComponent<ActionController>();
+    }
+
     private void OnTriggerStay(Collider cylinderCollider)
     {
-        if (cylinderCollider.CompareTag("Interactive") && actionController.heldObject == null)
+        if (cylinderCollider.CompareTag("Interactive") && _actionController.heldObject == null)
         {
             Rigidbody objectRig = cylinderCollider.gameObject.GetComponent<Rigidbody>();
             objectRig.useGravity = false;
@@ -28,7 +35,7 @@ public class TriggerAreaController : MonoBehaviour
     
     private void OnTriggerExit(Collider cylinderCollider)
     {
-        if (cylinderCollider.CompareTag("Interactive") && actionController.heldObject == null)
+        if (cylinderCollider.CompareTag("Interactive") && _actionController.heldObject == null)
         {
             Rigidbody objectRig = cylinderCollider.gameObject.GetComponent<Rigidbody>();
             objectRig.useGravity = true;
