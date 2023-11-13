@@ -29,7 +29,7 @@ namespace ForObjects
             PortalView.transform.rotation = difference * playerCamera.transform.rotation;
 
             // Clipping
-            /*PortalView.nearClipPlane = lookerPosition.magnitude;*/
+            PortalView.nearClipPlane = lookerPosition.magnitude;
         }
     }
 }
