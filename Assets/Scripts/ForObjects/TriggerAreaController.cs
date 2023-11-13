@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TriggerAreaController : MonoBehaviour
@@ -9,10 +10,21 @@ public class TriggerAreaController : MonoBehaviour
     
     private float _moveForce = 150;
 
+    [HideInInspector] public bool door;
+
     private void Start()
     {
         _player = GameObject.Find("Player");
         _actionController = _player.GetComponent<ActionController>();
+    }
+
+    private void OnTriggerEnter(Collider cylinderCollider)
+    {
+        if (cylinderCollider.CompareTag("Interactive") && _actionController.heldObject != null)
+        {
+            door = true;
+            Debug.Log("door: open");
+        } 
     }
 
     private void OnTriggerStay(Collider cylinderCollider)
@@ -35,13 +47,16 @@ public class TriggerAreaController : MonoBehaviour
     
     private void OnTriggerExit(Collider cylinderCollider)
     {
-        if (cylinderCollider.CompareTag("Interactive") && _actionController.heldObject == null)
+        if (cylinderCollider.CompareTag("Interactive") && _actionController.heldObject != null)
         {
-            Rigidbody objectRig = cylinderCollider.gameObject.GetComponent<Rigidbody>();
-            objectRig.useGravity = true;
-            objectRig.drag = 1;
+            //Rigidbody objectRig = cylinderCollider.gameObject.GetComponent<Rigidbody>();
+            //objectRig.useGravity = true;
+            //objectRig.drag = 1;
             
-            objectRig.transform.parent = null;
+            //objectRig.transform.parent = null;
+            
+            door = false;
+            Debug.Log("door: close");
         }
     }
 }

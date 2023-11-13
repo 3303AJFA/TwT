@@ -20,7 +20,7 @@ namespace ForObjects
             // Position
             Vector3 lookerPosition =
                 Other.transform.worldToLocalMatrix.MultiplyPoint3x4(player.transform.position);
-            lookerPosition = new Vector3(-lookerPosition.x, -lookerPosition.y, 2);
+            lookerPosition = new Vector3(-lookerPosition.x, -lookerPosition.y, -lookerPosition.z);
             PortalView.transform.localPosition = lookerPosition;
 
             // Rotation
