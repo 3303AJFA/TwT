@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PortalTeleport : MonoBehaviour
@@ -7,6 +8,8 @@ public class PortalTeleport : MonoBehaviour
     public Transform receiver;
 
     public GameObject wall;
+
+    private GameObject _cloneObject;
 
     private bool playerIsOverlapping = false;
 
@@ -39,6 +42,8 @@ public class PortalTeleport : MonoBehaviour
         {
             playerIsOverlapping = true;
         }
+
+        //_cloneObject = Instantiate(other.GameObject());
     }
     
     private void OnTriggerExit(Collider other)
@@ -49,5 +54,7 @@ public class PortalTeleport : MonoBehaviour
         {
             playerIsOverlapping = false;
         }
+
+        //Destroy(_cloneObject);
     }
 }

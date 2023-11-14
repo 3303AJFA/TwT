@@ -6,6 +6,7 @@ namespace ForObjects
     {
         public PortalController Other;
         public Camera PortalView;
+        public Transform portalCamera;
         public Transform player;
         public Transform playerCamera;
 
@@ -17,11 +18,16 @@ namespace ForObjects
 
         private void Update()
         {
+            CameraPortal();
+        }
+
+        private void CameraPortal()
+        {
             // Position
             Vector3 lookerPosition =
                 Other.transform.worldToLocalMatrix.MultiplyPoint3x4(player.transform.position);
-            lookerPosition = new Vector3(-lookerPosition.x, -lookerPosition.y, -lookerPosition.z);
-            PortalView.transform.localPosition = lookerPosition;
+            lookerPosition = new Vector3(-lookerPosition.x, -lookerPosition.y, lookerPosition.z/2);
+            portalCamera.transform.localPosition = lookerPosition;
 
             // Rotation
             Quaternion difference = transform.rotation *
@@ -29,7 +35,7 @@ namespace ForObjects
             PortalView.transform.rotation = difference * playerCamera.transform.rotation;
 
             // Clipping
-            PortalView.nearClipPlane = lookerPosition.magnitude;
+            PortalView.nearClipPlane = -lookerPosition.magnitude/2;
         }
     }
 }
