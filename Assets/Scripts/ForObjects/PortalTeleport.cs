@@ -65,6 +65,9 @@ public class PortalTeleport : MonoBehaviour
     {
         if (other.CompareTag("Interactive"))
         {
+            // Сохраняем rotation объекта
+            Quaternion originalRotation = other.transform.rotation;
+            
             // Определение вектора направления от объекта к порталу
             Vector3 directionToPortal = (other.transform.position - transform.position).normalized;
             
@@ -78,6 +81,8 @@ public class PortalTeleport : MonoBehaviour
                 
                 // Установка новой позиции клонированного объекта относительно портала
                 _cloneObject.transform.position = receiver.position + directionToPortal * distance;
+
+                _cloneObject.transform.rotation = originalRotation;
             }
         }
         /*
@@ -101,11 +106,11 @@ public class PortalTeleport : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        var m_collider = wall.GetComponent<Collider>();
-        m_collider.isTrigger = false;
-        
         if (other.CompareTag("Player"))
         {
+            var m_collider = wall.GetComponent<Collider>();
+            m_collider.isTrigger = false;
+            
             playerIsOverlapping = false;
         }
 
