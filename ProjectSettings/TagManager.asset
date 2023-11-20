@@ -10,6 +10,8 @@ TagManager:
   - Interactive
   - Clone
   - Ice
+  - Laser
+  - Portal
   layers:
   - Default
   - TransparentFX
@@ -23,7 +25,7 @@ TagManager:
   - Wall2
   - Interactive
   - Portal
-  - 
+  - Laser
   - 
   - 
   - 

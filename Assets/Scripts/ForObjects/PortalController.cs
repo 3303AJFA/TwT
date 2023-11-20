@@ -35,7 +35,7 @@ namespace ForObjects
             PortalView.transform.rotation = difference * playerCamera.transform.rotation;
 
             // Clipping
-            PortalView.nearClipPlane = -lookerPosition.magnitude/3f;
+            PortalView.nearClipPlane = lookerPosition.magnitude/(-1.3f);
         }
     }
 }

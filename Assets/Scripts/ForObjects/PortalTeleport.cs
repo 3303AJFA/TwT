@@ -67,10 +67,10 @@ public class PortalTeleport : MonoBehaviour
         {
             // Сохраняем rotation объекта
             Quaternion originalRotation = other.transform.rotation;
-            
+
             // Определение вектора направления от объекта к порталу
             Vector3 directionToPortal = (other.transform.position - transform.position).normalized;
-            
+
             // Вычисление расстояния между объектом и порталом
             float distance = Vector3.Distance(other.transform.position, transform.position);
 
@@ -78,30 +78,17 @@ public class PortalTeleport : MonoBehaviour
             if (_cloneObject != null)
             {
                 _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                
+
                 // Установка новой позиции клонированного объекта относительно портала
                 _cloneObject.transform.position = receiver.position + directionToPortal * distance;
 
                 _cloneObject.transform.rotation = originalRotation;
             }
         }
-        /*
-        if (_cloneObject != null)
+        else if (other.CompareTag("Laser"))
         {
-            Vector3 portalToObject = _cloneObject.transform.position - transform.position;
-            float dotProduct = Vector3.Dot(transform.up, portalToObject);
-
-            if (dotProduct < 0f)
-            {
-                float rotationDiff = -Quaternion.Angle(transform.rotation, receiver.rotation);
-                rotationDiff += 180;
-                _cloneObject.transform.Rotate(Vector3.up, rotationDiff);
-
-                Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToObject;
-                _cloneObject.transform.position = receiver.position + positionOffset;
-            }
+            
         }
-        */
     }
 
     private void OnTriggerExit(Collider other)
