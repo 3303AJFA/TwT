@@ -5,8 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - Walls
-  - Wall1
-  - Wall2
   - Interactive
   - Clone
   - Ice
@@ -26,7 +24,7 @@ TagManager:
   - Interactive
   - Portal
   - Laser
-  - 
+  - Partition wall
   - 
   - 
   - 

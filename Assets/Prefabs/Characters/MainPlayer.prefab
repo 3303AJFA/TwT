@@ -65,7 +65,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: -0.15
   far clip plane: 5000
   field of view: 40
   orthographic: 1
@@ -333,6 +333,11 @@ PrefabInstance:
         type: 3}
       propertyPath: dashSpeed
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773211830836387996, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
+      propertyPath: groundMask.m_Bits
+      value: 2039
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
