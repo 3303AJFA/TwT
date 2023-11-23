@@ -55,13 +55,13 @@ public class LaserController : MonoBehaviour
                 {
                     _laserHitPlayer = false;
                     _lr.SetPosition(1, hit.point);
-                    CurrentColliderSize(_lr.GetPosition(1).z);
+                    CurrentColliderSize(hit.distance);
                 }
                 else
                 {
                     _laserHitPlayer = false;
-                    _lr.SetPosition(1, transform.forward * maxLaserDistance);
-                    CurrentColliderSize(_lr.GetPosition(1).z);
+                    _lr.SetPosition(1, hit.point);
+                    CurrentColliderSize(hit.distance);
                 }
             }
         }
@@ -77,7 +77,7 @@ public class LaserController : MonoBehaviour
     {
         if (_laserCollider is BoxCollider boxCollider)
         {
-            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize);
+            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2);
             boxCollider.center = new Vector3(boxCollider.center.x, boxCollider.center.y, boxCollider.size.z / 2f);
         }
     }
