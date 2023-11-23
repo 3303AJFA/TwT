@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -77,7 +78,7 @@ public class LaserController : MonoBehaviour
     {
         if (_laserCollider is BoxCollider boxCollider)
         {
-            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2);
+            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2f);
             boxCollider.center = new Vector3(boxCollider.center.x, boxCollider.center.y, boxCollider.size.z / 2f);
         }
     }

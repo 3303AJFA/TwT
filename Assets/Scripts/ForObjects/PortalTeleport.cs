@@ -59,6 +59,10 @@ public class PortalTeleport : MonoBehaviour
             
             Destroy(_cloneObject.GetComponent<Collider>());
         }
+        else if (other.CompareTag("Interactive"))
+        {
+            
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -84,10 +88,13 @@ public class PortalTeleport : MonoBehaviour
 
                 _cloneObject.transform.rotation = originalRotation;
             }
-        }
-        else if (other.CompareTag("Laser"))
+        }else if (other.CompareTag("Laser"))
         {
-            
+            // Сохраняем rotation объекта
+            Quaternion originalRotation = other.transform.rotation;
+
+            // Определение вектора направления от объекта к порталу
+            Vector3 directionToPortal = (other.transform.position - transform.position).normalized;
         }
     }
 
