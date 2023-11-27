@@ -67,7 +67,7 @@ public class LaserController : MonoBehaviour
         else
         {
             _laserHitPlayer = false;
-            _lr.SetPosition(1, new Vector3(transform.position.x, transform.position.y, transform.position.z + maxLaserDistance));
+            _lr.SetPosition(1, transform.position + transform.forward * maxLaserDistance);
             CurrentColliderSize(_lr.GetPosition(1).z-_lr.GetPosition(0).z);
         }
     }

@@ -44,7 +44,8 @@ public class PortalTeleport : MonoBehaviour
         {
             playerIsOverlapping = true;
         }
-        else if (other.CompareTag("Interactive") || other.CompareTag("Laser"))
+        
+        if (other.CompareTag("Interactive") || other.CompareTag("Laser"))
         {
             CloneObject(other);
         }
@@ -72,11 +73,14 @@ public class PortalTeleport : MonoBehaviour
             }
         }else if (other.CompareTag("Laser"))
         {
+            LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
+            LineRenderer mainLineRenderer = other.GetComponent<LineRenderer>();
+            
             // Применяем масштаб клонированного объекта
             _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             // Установка новой позиции клонированного объекта относительно портала
-            _cloneObject.transform.position = receiver.position;
+            cloneLineRenderer.SetPosition(0, new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z));
             
             _cloneObject.transform.rotation = other.transform.rotation;
         }
@@ -92,17 +96,35 @@ public class PortalTeleport : MonoBehaviour
             playerIsOverlapping = false;
         }
 
-        Destroy(_cloneObject);
+        if (other.CompareTag("Interactive") || other.CompareTag("Laser"))
+        {
+            Destroy(_cloneObject);
+        }
+        
     }
     
     private void CloneObject(Collider originalCollider)
     {
-        Quaternion originalRotation = originalCollider.transform.rotation;
-        Vector3 clonePosition = new Vector3(receiver.position.x, receiver.position.y, receiver.position.z);
+        if (originalCollider.CompareTag("Interactive"))
+        {
+            Quaternion originalRotation = originalCollider.transform.rotation;
+            Vector3 clonePosition = new Vector3(receiver.position.x, receiver.position.y, receiver.position.z);
 
-        _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
+            _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
 
-        Collider colliderClone = _cloneObject.GetComponent<Collider>();
-        colliderClone.enabled = false;
+            Collider colliderClone = _cloneObject.GetComponent<Collider>();
+            colliderClone.enabled = false;
+        } else if (originalCollider.CompareTag("Laser"))
+        {
+            LineRenderer mainLineRenderer = originalCollider.GetComponent<LineRenderer>();
+            
+            Quaternion originalRotation = originalCollider.transform.rotation;
+            Vector3 clonePosition = new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z);
+
+            _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
+
+            Collider colliderClone = _cloneObject.GetComponent<Collider>();
+            colliderClone.enabled = false;
+        }
     }
 }
