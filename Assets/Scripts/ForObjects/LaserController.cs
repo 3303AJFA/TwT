@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 public class LaserController : MonoBehaviour
@@ -69,8 +67,8 @@ public class LaserController : MonoBehaviour
         else
         {
             _laserHitPlayer = false;
-            _lr.SetPosition(1, transform.position + transform.forward * maxLaserDistance);
-            CurrentColliderSize(_lr.GetPosition(1).z);
+            _lr.SetPosition(1, new Vector3(transform.position.x, transform.position.y, transform.position.z + maxLaserDistance));
+            CurrentColliderSize(_lr.GetPosition(1).z-_lr.GetPosition(0).z);
         }
     }
 
@@ -78,7 +76,7 @@ public class LaserController : MonoBehaviour
     {
         if (_laserCollider is BoxCollider boxCollider)
         {
-            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2f);
+            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2);
             boxCollider.center = new Vector3(boxCollider.center.x, boxCollider.center.y, boxCollider.size.z / 2f);
         }
     }

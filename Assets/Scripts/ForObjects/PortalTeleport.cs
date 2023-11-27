@@ -1,16 +1,12 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PortalTeleport : MonoBehaviour
 {
     public Transform player;
     public Transform receiver;
-
     public GameObject wall;
 
     private GameObject _cloneObject;
-
     private bool playerIsOverlapping = false;
 
     private void Update()
@@ -48,20 +44,9 @@ public class PortalTeleport : MonoBehaviour
         {
             playerIsOverlapping = true;
         }
-        else if (other.CompareTag("Interactive"))
+        else if (other.CompareTag("Interactive") || other.CompareTag("Laser"))
         {
-            // Сохраняем rotation объекта
-            Quaternion originalRotation = other.transform.rotation;
-            Vector3 clonePosition = new Vector3(receiver.position.x,receiver.position.y,receiver.position.z);
-
-            // Создаем клон объекта перед вторым порталом
-            _cloneObject = Instantiate(other.gameObject, clonePosition, originalRotation);
-            
-            Destroy(_cloneObject.GetComponent<Collider>());
-        }
-        else if (other.CompareTag("Interactive"))
-        {
-            
+            CloneObject(other);
         }
     }
 
@@ -69,9 +54,6 @@ public class PortalTeleport : MonoBehaviour
     {
         if (other.CompareTag("Interactive"))
         {
-            // Сохраняем rotation объекта
-            Quaternion originalRotation = other.transform.rotation;
-
             // Определение вектора направления от объекта к порталу
             Vector3 directionToPortal = (other.transform.position - transform.position).normalized;
 
@@ -86,15 +68,17 @@ public class PortalTeleport : MonoBehaviour
                 // Установка новой позиции клонированного объекта относительно портала
                 _cloneObject.transform.position = receiver.position + directionToPortal * distance;
 
-                _cloneObject.transform.rotation = originalRotation;
+                _cloneObject.transform.rotation = other.transform.rotation;
             }
         }else if (other.CompareTag("Laser"))
         {
-            // Сохраняем rotation объекта
-            Quaternion originalRotation = other.transform.rotation;
+            // Применяем масштаб клонированного объекта
+            _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
-            // Определение вектора направления от объекта к порталу
-            Vector3 directionToPortal = (other.transform.position - transform.position).normalized;
+            // Установка новой позиции клонированного объекта относительно портала
+            _cloneObject.transform.position = receiver.position;
+            
+            _cloneObject.transform.rotation = other.transform.rotation;
         }
     }
 
@@ -109,5 +93,16 @@ public class PortalTeleport : MonoBehaviour
         }
 
         Destroy(_cloneObject);
+    }
+    
+    private void CloneObject(Collider originalCollider)
+    {
+        Quaternion originalRotation = originalCollider.transform.rotation;
+        Vector3 clonePosition = new Vector3(receiver.position.x, receiver.position.y, receiver.position.z);
+
+        _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
+
+        Collider colliderClone = _cloneObject.GetComponent<Collider>();
+        colliderClone.enabled = false;
     }
 }
