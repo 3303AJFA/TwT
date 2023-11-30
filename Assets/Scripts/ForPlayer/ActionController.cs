@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ActionController : MonoBehaviour
@@ -104,7 +103,7 @@ public class ActionController : MonoBehaviour
         }
     }
 
-    private void DropObject()
+    public void DropObject()
     {
             Rigidbody heldRig = heldObject.GetComponent<Rigidbody>();
             heldRig.useGravity = true;
