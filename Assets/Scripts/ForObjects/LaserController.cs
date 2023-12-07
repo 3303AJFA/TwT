@@ -20,14 +20,15 @@ public class LaserController : MonoBehaviour
         _lr.SetPosition(0, transform.position);
         RaycastHit hit;
         
-        // Указываем слой лазера
+        // Указываем слои игнорирования
         int laserLayer = LayerMask.NameToLayer("Laser");
+        int barrierInteractiveLayer = LayerMask.NameToLayer("BarrierForInteractive");
 
-        // Создаем маску, чтобы луч сталкивался с другими объектами, но игнорировал объекты на своем собственном слое
-        int layerMask = 1 << laserLayer;
+        // Создаем маску, чтобы луч сталкивался с другими объектами, но игнорировал объекты на своем собственном слое и слое барьера для луча и тд.
+        int layerMask = ~(1 << laserLayer) & ~(1 << barrierInteractiveLayer);
 
         
-        if (Physics.Raycast(transform.position, transform.forward, out hit, maxLaserDistance, ~layerMask))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, maxLaserDistance, layerMask))
         {
             if (hit.collider)
             {

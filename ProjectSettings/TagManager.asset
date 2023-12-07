@@ -26,8 +26,8 @@ TagManager:
   - Portal
   - Laser
   - Partition wall
-  - Barrier
-  - 
+  - BarrierForPlayer
+  - BarrierForInteractive
   - 
   - 
   - 

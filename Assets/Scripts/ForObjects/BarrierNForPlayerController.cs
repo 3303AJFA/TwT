@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BarrierNForPlayerController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private ActionController _actionController;
+    private GameObject _player;
+    
+    private void Start()
     {
-        
+        _player = GameObject.Find("Player");
+        _actionController = _player.GetComponent<ActionController>();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void OnCollisionEnter(Collision other)
     {
-        
+        if (_actionController.heldObject != null && other.collider.CompareTag("Player"))
+        {
+            _actionController.DropObject();
+        } 
     }
 }
