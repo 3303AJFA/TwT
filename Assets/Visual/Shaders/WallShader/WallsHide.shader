@@ -37,7 +37,7 @@ Shader "CustomShaders/WallsHide"
         
         // Render State
         Cull Back
-        Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
+        Blend One OneMinusSrcAlpha
         ZTest LEqual
         ZWrite On
         
