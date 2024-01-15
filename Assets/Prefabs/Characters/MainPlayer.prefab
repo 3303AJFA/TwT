@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 12398213648083738}
   - component: {fileID: 8816518289153941037}
   - component: {fileID: 7813181601513068265}
+  - component: {fileID: 9011914670857783567}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -137,6 +138,15 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!45 &9011914670857783567
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18239385267594271}
+  m_Enabled: 0
+  m_CustomSkybox: {fileID: 2100000, guid: 259e90294f756f2439a832e557d69273, type: 2}
 --- !u!1 &2947926930014584072
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,6 +317,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3862028692943298972, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
+      propertyPath: _layerMask.m_Bits
+      value: 8960
       objectReference: {fileID: 0}
     - target: {fileID: 4127151803785998877, guid: 13c3223ad78751446b568b4891efc7ca,
         type: 3}
