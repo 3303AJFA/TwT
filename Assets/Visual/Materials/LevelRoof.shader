@@ -1,4 +1,4 @@
-Shader "Shader Graphs/LevelRoof"
+Shader "CustomShaders/LevelRoof"
 {
     Properties
     {
