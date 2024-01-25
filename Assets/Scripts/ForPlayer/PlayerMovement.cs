@@ -13,6 +13,12 @@ public class PlayerMovement : MonoBehaviour
         _playerController = GetComponent<PlayerController>();
         _rb = GetComponent<Rigidbody>();
     }
+
+    /*public void MovePlayer(Vector3 direction)
+    {
+        Vector3 movement = _playerController.movement * (_playerController.speed * Time.fixedDeltaTime);
+        _rb.MovePosition(_rb.position + movement - direction);
+    }*/
     
     public void MovePlayer()
     {
