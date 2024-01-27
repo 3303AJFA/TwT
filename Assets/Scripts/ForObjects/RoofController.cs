@@ -18,6 +18,13 @@ public class RoofController : MonoBehaviour
 
     [Header("Door Config")] 
     [SerializeField] private float pushForce = 5f;
+    [SerializeField] private Transform beforeDoorPoint;
+    [SerializeField] private Transform afterDoorPoint;
+    
+    private bool isPlayerInside = false;
+    private Vector3 currentTarget;
+    private Rigidbody playerRB;
+    
     //[SerializeField] private float distanceThreshold = 2f;
     
     private static readonly int Opacity = Shader.PropertyToID("_Opacity");
@@ -27,91 +34,89 @@ public class RoofController : MonoBehaviour
         _preRoofMr = preRoof.GetComponent<MeshRenderer>();
         _postRoofMr = postRoof.GetComponent<MeshRenderer>();
     }
+    
+    private void Update()
+    {
+        if (isPlayerInside)
+        {
+            // Притягиваем игрока к текущей цели
+            PlayerMovement();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            playerRB = other.GetComponent<Rigidbody>();
             if (!_isExiting)
             {
                 StartCoroutine(SmoothAlphaValue(_preRoofMr, _postRoofMr, 0f, _targetOpacity));
-                Rigidbody playerRb = other.GetComponent<Rigidbody>();
-
-                // Получаем центр коллайдера двери
-                Vector3 doorCenter = GetComponent<Collider>().bounds.center;
-
-                // Определение направления от игрока к центру коллайдера двери
-                Vector3 directionToDoorCenter = doorCenter - other.transform.position;
-
-                // Получаем вектор скорости игрока
-                Vector3 playerVelocity = playerRb.velocity.normalized;
-
-                // Выравниваем направление от игрока к центру двери с направлением его движения
-                Vector3 pushDirection =
-                    Vector3.ProjectOnPlane(directionToDoorCenter, playerVelocity).normalized * pushForce;
-
-                // Применение силы с использованием Rigidbody
-                playerRb.AddForce(pushDirection, ForceMode.Impulse);
+                isPlayerInside = true;
+                CalculateTarget(other.transform.position);
                 _isExiting = true;
             }
             else
             {
                 StartCoroutine(SmoothAlphaValue(_postRoofMr, _preRoofMr, 0f, _targetOpacity));
-                Rigidbody playerRb = other.GetComponent<Rigidbody>();
-
-                // Получаем центр коллайдера двери
-                Vector3 doorCenter = GetComponent<Collider>().bounds.center;
-
-                // Определение направления от игрока к центру коллайдера двери
-                Vector3 directionToDoorCenter = doorCenter - other.transform.position;
-
-                // Получаем вектор скорости игрока
-                Vector3 playerVelocity = playerRb.velocity.normalized;
-
-                // Выравниваем направление от игрока к центру двери с направлением его движения
-                Vector3 pushDirection =
-                    Vector3.ProjectOnPlane(directionToDoorCenter, playerVelocity).normalized * pushForce;
-
-                // Применение силы с использованием Rigidbody
-                playerRb.AddForce(pushDirection, ForceMode.Impulse);
+                isPlayerInside = true;
+                CalculateTarget(other.transform.position);
                 _isExiting = false;
             }
         }
     }
-
-    /*private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Rigidbody playerRb = other.GetComponent<Rigidbody>();
-
-            // Получаем центр коллайдера двери
-            Vector3 doorCenter = GetComponent<Collider>().bounds.center;
-
-            // Определение направления от игрока к центру коллайдера двери
-            Vector3 directionToDoorCenter = doorCenter - other.transform.position;
-
-            // Получаем вектор скорости игрока
-            Vector3 playerVelocity = playerRb.velocity.normalized;
-
-            // Выравниваем направление от игрока к центру двери с направлением его движения
-            Vector3 pushDirection =
-                Vector3.ProjectOnPlane(directionToDoorCenter, playerVelocity).normalized * pushForce;
-
-            // Применение силы с использованием Rigidbody
-            playerRb.AddForce(pushDirection, ForceMode.Impulse);
-        }
-    }*/
     
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            Rigidbody playerRb = other.GetComponent<Rigidbody>();
-            playerRb.velocity = Vector3.zero; // Обнуляем скорость, чтобы избежать застревания
+            isPlayerInside = false;
+            CalculateTarget(other.transform.position);
+        }
+    }
+    
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            CalculateTarget(other.transform.position);
         }
     }
 
+    private void CalculateTarget(Vector3 playerPosition)
+    {
+        Vector3 direction = playerPosition - transform.position;
+
+        if (isPlayerInside)
+        {
+            if (_isExiting)
+            {
+                currentTarget = beforeDoorPoint.position;
+            } 
+            else
+            {
+                currentTarget = currentTarget = afterDoorPoint.position;
+            }
+        }
+        else
+        {
+            // Игрок снаружи триггера, притягиваем его в направлении движения
+            currentTarget = transform.position + Vector3.Project(direction, transform.forward);
+        }
+    }
+    
+    private void PlayerMovement()
+    {
+        float step = pushForce * Time.deltaTime;
+        Vector3 newPosition = Vector3.MoveTowards(playerRB.transform.position, currentTarget, step);
+        
+        // Обнуляем Y координату
+        newPosition.y = playerRB.transform.position.y;
+        
+        // Применяем новую позицию к объекту игрока
+        playerRB.transform.position = newPosition;
+    }
+    
     IEnumerator SmoothAlphaValue(MeshRenderer startRoof, MeshRenderer endRoof, float startOpacity, float targetOpacity)
     {
         float elapsedTime = 0f;

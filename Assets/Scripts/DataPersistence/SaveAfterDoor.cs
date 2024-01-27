@@ -16,6 +16,7 @@ public class SaveAfterDoor : MonoBehaviour, IDataPersistence
         if (!isSaved)
         {
             data.playerPosition = savePoint.position;
+            data.playerPosition.y = 0;
             isSaved = true;
         }
     }
