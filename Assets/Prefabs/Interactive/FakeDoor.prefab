@@ -86,6 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 668e62de0999cbc40ab99fd972119207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 1112291e-8a85-4e81-a622-aed97e033695
   savePoint: {fileID: 552324547348799283}
   isSaved: 0
 --- !u!1 &3114275310634993804

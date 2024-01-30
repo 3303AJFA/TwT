@@ -5,7 +5,7 @@ using UnityEngine;
 public class RoofController : MonoBehaviour
 {
     //private PlayerMovement _playerMovement;
-    
+
     [SerializeField] private GameObject preRoof;
     [SerializeField] private GameObject postRoof;
     
@@ -43,6 +43,7 @@ public class RoofController : MonoBehaviour
             PlayerMovement();
         }
     }
+    
 
     private void OnTriggerEnter(Collider other)
     {
