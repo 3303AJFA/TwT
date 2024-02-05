@@ -1,11 +1,16 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-public class RoofController : MonoBehaviour
+public class RoofController : MonoBehaviour, IDataPersistence
 {
-    //private PlayerMovement _playerMovement;
+    [SerializeField] private string id;
 
+    [ContextMenu("Generate guid for id")]
+    private void GenerateGuid()
+    {
+        id = System.Guid.NewGuid().ToString();
+    }
+    
     [SerializeField] private GameObject preRoof;
     [SerializeField] private GameObject postRoof;
     
@@ -22,10 +27,9 @@ public class RoofController : MonoBehaviour
     [SerializeField] private Transform afterDoorPoint;
     
     private bool isPlayerInside = false;
+    private bool _isFirstExit = false;
     private Vector3 currentTarget;
     private Rigidbody playerRB;
-    
-    //[SerializeField] private float distanceThreshold = 2f;
     
     private static readonly int Opacity = Shader.PropertyToID("_Opacity");
 
@@ -43,27 +47,21 @@ public class RoofController : MonoBehaviour
             PlayerMovement();
         }
     }
-    
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             playerRB = other.GetComponent<Rigidbody>();
-            if (!_isExiting)
-            {
-                StartCoroutine(SmoothAlphaValue(_preRoofMr, _postRoofMr, 0f, _targetOpacity));
-                isPlayerInside = true;
-                CalculateTarget(other.transform.position);
-                _isExiting = true;
-            }
-            else
-            {
-                StartCoroutine(SmoothAlphaValue(_postRoofMr, _preRoofMr, 0f, _targetOpacity));
-                isPlayerInside = true;
-                CalculateTarget(other.transform.position);
-                _isExiting = false;
-            }
+            isPlayerInside = true;
+            CalculateTarget();
+            _isExiting = !_isExiting;
+            
+            StartCoroutine(SmoothAlphaValue(_isExiting ? _preRoofMr : _postRoofMr,
+                _isExiting ? _postRoofMr : _preRoofMr,
+                0f, _targetOpacity));
+            
+            _isFirstExit = true;
         }
     }
     
@@ -72,50 +70,27 @@ public class RoofController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInside = false;
-            CalculateTarget(other.transform.position);
-        }
-    }
-    
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            CalculateTarget(other.transform.position);
         }
     }
 
-    private void CalculateTarget(Vector3 playerPosition)
+    private void CalculateTarget()
     {
-        Vector3 direction = playerPosition - transform.position;
-
         if (isPlayerInside)
         {
-            if (_isExiting)
-            {
-                currentTarget = beforeDoorPoint.position;
-            } 
-            else
-            {
-                currentTarget = currentTarget = afterDoorPoint.position;
-            }
-        }
-        else
-        {
-            // Игрок снаружи триггера, притягиваем его в направлении движения
-            currentTarget = transform.position + Vector3.Project(direction, transform.forward);
+            currentTarget = _isExiting ? beforeDoorPoint.position : afterDoorPoint.position;
         }
     }
     
     private void PlayerMovement()
     {
         float step = pushForce * Time.deltaTime;
-        Vector3 newPosition = Vector3.MoveTowards(playerRB.transform.position, currentTarget, step);
+        Vector3 newPosition = Vector3.Lerp(playerRB.position, currentTarget, step);
         
         // Обнуляем Y координату
-        newPosition.y = playerRB.transform.position.y;
+        newPosition.y = playerRB.position.y;
         
         // Применяем новую позицию к объекту игрока
-        playerRB.transform.position = newPosition;
+        playerRB.position = newPosition;
     }
     
     IEnumerator SmoothAlphaValue(MeshRenderer startRoof, MeshRenderer endRoof, float startOpacity, float targetOpacity)
@@ -127,11 +102,25 @@ public class RoofController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / _transitionDuration);
             float newOpacity = Mathf.Lerp(startOpacity, targetOpacity, t);
-
+            
             startRoof.material.SetFloat(Opacity, newOpacity);
             endRoof.material.SetFloat(Opacity, targetOpacity - newOpacity);
 
             yield return null;
         }
+    }
+
+    public void LoadData(GameData data)
+    {
+        data.isExited.TryGetValue(id, out _isExiting);
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        if (data.isExited.ContainsKey(id))
+        {
+            data.isExited.Remove(id);
+        }
+        data.isExited.Add(id, _isFirstExit);
     }
 }

@@ -12,7 +12,7 @@ public class SaveAfterDoor : MonoBehaviour, IDataPersistence
     }
     
     [SerializeField] private Transform savePoint;
-    [SerializeField] private bool isSaved = false;
+    [HideInInspector] public bool isSaved = false;
     private bool _isLoaded = false;
     
     public void LoadData(GameData data)

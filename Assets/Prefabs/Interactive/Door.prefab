@@ -69,6 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948a88834abe806489405b1dc177e95e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 828fb2c2-c6df-46b2-8456-8fffe6f322f2
   preRoof: {fileID: 0}
   postRoof: {fileID: 0}
   pushForce: 5
@@ -357,4 +358,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59392a3fbdf5e1e46a3bacb1259f1699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveAfterDoor: {fileID: 884964016498675454}
+  id: cba4ebbe-d450-4292-b2fa-ae1220bd93d9
   triggerAreaController: {fileID: 0}
