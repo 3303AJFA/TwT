@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class DoorController : MonoBehaviour, IDataPersistence
+public class DoorControllerLaser : MonoBehaviour
 {
-    public SaveAfterDoor saveAfterDoor;
+public SaveAfterDoor saveAfterDoor;
     [SerializeField] private string id;
 
     [ContextMenu("Generate guid for id")]
@@ -11,7 +11,7 @@ public class DoorController : MonoBehaviour, IDataPersistence
         id = System.Guid.NewGuid().ToString();
     }
     
-    [SerializeField]private TriggerAreaController triggerAreaController;
+    [SerializeField]private LaserReciever laserReciever;
     private Vector3 _originalPosition;
     private Vector3 _savePosition;
     private float _maximumDoorTranslate = 0.8f;
@@ -36,16 +36,16 @@ public class DoorController : MonoBehaviour, IDataPersistence
             uploaded = true;
         }
         
-        if ((triggerAreaController.door && transform.position.y < _openDoorStep) && !isDoorStop)
+        if ((laserReciever.door && transform.position.y < _openDoorStep) && !isDoorStop)
         {
-            transform.Translate(Vector3.forward * _maximumDoorTranslate * Time.deltaTime);
-            Debug.Log(transform.position + " " + _originalPosition + " " + _openDoorStep);
+            transform.Translate(Vector3.forward * _maximumDoorTranslate * Time.deltaTime); 
+            //Debug.Log(transform.position + " " + _originalPosition + " " + _openDoorStep);
             isDoorStop = false;
         }
-        else if ((!triggerAreaController.door && transform.position.y > _originalPosition.y) && !isDoorStop && !uploaded)
+        else if ((!laserReciever.door && transform.position.y > _originalPosition.y) && !isDoorStop && !uploaded)
         {
             transform.Translate(Vector3.back * _maximumDoorTranslate * Time.deltaTime);
-            Debug.Log(transform.position + " " + _originalPosition);
+            //Debug.Log(transform.position + " " + _originalPosition);
             isDoorStop = false;
         }
     }

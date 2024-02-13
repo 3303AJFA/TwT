@@ -81,7 +81,8 @@ public class PortalTeleport : MonoBehaviour
 
             // Установка новой позиции клонированного объекта относительно портала
             cloneLineRenderer.SetPosition(0, new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z));
-            
+
+            _cloneObject.transform.position = cloneLineRenderer.GetPosition(0);
             _cloneObject.transform.rotation = other.transform.rotation;
         }
     }
