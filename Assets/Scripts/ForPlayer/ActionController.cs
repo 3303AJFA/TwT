@@ -156,7 +156,7 @@ public class ActionController : MonoBehaviour
     
     private void UpdateChargeIndicator()
     {
-        // Обновляем UI элемент зарядки (например, изменяем fillAmount для заполнения круга)
+        // Обновляем UI элемент зарядки 
         chargeIndicator.fillAmount = _currentChargeTime / maxChargeTime;
     }
 
