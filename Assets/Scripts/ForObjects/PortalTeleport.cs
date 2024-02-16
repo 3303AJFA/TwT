@@ -80,7 +80,7 @@ public class PortalTeleport : MonoBehaviour
             _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             // Установка новой позиции клонированного объекта относительно портала
-            cloneLineRenderer.SetPosition(0, new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z));
+            cloneLineRenderer.SetPosition(0, new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z + 0.1f));
 
             _cloneObject.transform.position = cloneLineRenderer.GetPosition(0);
             _cloneObject.transform.rotation = other.transform.rotation;
@@ -120,12 +120,9 @@ public class PortalTeleport : MonoBehaviour
             LineRenderer mainLineRenderer = originalCollider.GetComponent<LineRenderer>();
             
             Quaternion originalRotation = originalCollider.transform.rotation;
-            Vector3 clonePosition = new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z);
+            Vector3 clonePosition = new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z  + 0.1f);
 
             _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
-
-            Collider colliderClone = _cloneObject.GetComponent<Collider>();
-            colliderClone.enabled = false;
         }
     }
 }

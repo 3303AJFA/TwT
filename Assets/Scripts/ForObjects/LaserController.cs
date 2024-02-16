@@ -69,16 +69,16 @@ public class LaserController : MonoBehaviour
         {
             _laserHitPlayer = false;
             _lr.SetPosition(1, transform.position + transform.forward * maxLaserDistance);
-            CurrentColliderSize(_lr.GetPosition(1).z-_lr.GetPosition(0).z);
+            CurrentColliderSize(maxLaserDistance);
         }
     }
 
     private void CurrentColliderSize(float newSize)
     {
-        if (_laserCollider is BoxCollider boxCollider)
+        if (_laserCollider is BoxCollider Collider)
         {
-            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2);
-            boxCollider.center = new Vector3(boxCollider.center.x, boxCollider.center.y, boxCollider.size.z / 2f);
+            Collider.size = new Vector3(Collider.size.x, Collider.size.y, newSize*2);
+            Collider.center = new Vector3(Collider.center.x, Collider.center.y, Collider.size.z / 2f);
         }
     }
 }
