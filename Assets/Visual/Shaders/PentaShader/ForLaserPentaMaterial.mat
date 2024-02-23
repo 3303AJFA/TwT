@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PentaCylinder
+  m_Name: ForLaserPentaMaterial
   m_Shader: {fileID: 4800000, guid: 28628c3321dfa75499255fa7570a0c30, type: 3}
-  m_Parent: {fileID: 2100000, guid: 29ef266318c155a49be6e6d6fe116809, type: 2}
+  m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
@@ -29,19 +29,6 @@ Material:
     - _ColorEnd: 1
     - _ColorStart: 0
     m_Colors:
-    - _ColorA: {r: 0, g: 0.5019608, b: 0.28694806, a: 1}
-    - _ColorB: {r: 0, g: 0.44527525, b: 0.9433962, a: 1}
+    - _ColorA: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorB: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &3933894182480844385
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 7

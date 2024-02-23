@@ -3,7 +3,10 @@ Shader "CustomShaders/WallsHide"
     Properties
     {
         [NoScaleOffset]_MainTexture("MainTexture", 2D) = "white" {}
-        _Tint("Tint", Color) = (0, 0, 0, 0)
+        _Tint("Tint", Color) = (0.8113208, 0.8113208, 0.8113208, 0)
+        _Metallic("Metallic", Range(0, 1)) = 0
+        _Smoothness("Smoothness", Range(0, 1)) = 0
+        _Ambient_Occlusion("Ambient Occlusion", Range(0, 1)) = 0
         _Position("PlayerPosition", Vector) = (0.5, 0.5, 0, 0)
         _Size("Size", Float) = 1
         _NoiseScale("NoiseScale", Float) = 100
@@ -37,7 +40,7 @@ Shader "CustomShaders/WallsHide"
         
         // Render State
         Cull Back
-        Blend One OneMinusSrcAlpha
+        Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha
         ZTest LEqual
         ZWrite On
         
@@ -302,6 +305,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -480,6 +486,9 @@ Shader "CustomShaders/WallsHide"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
+            float _Property_4dd4121f09044c439b56ce25ae4f755e_Out_0_Float = _Metallic;
+            float _Property_6cc42ba10cc24666a88c8642750a7722_Out_0_Float = _Smoothness;
+            float _Property_ff73816ec4a046898753e82b31bb6e22_Out_0_Float = _Ambient_Occlusion;
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -521,9 +530,9 @@ Shader "CustomShaders/WallsHide"
             surface.BaseColor = (_Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4.xyz);
             surface.NormalTS = IN.TangentSpaceNormal;
             surface.Emission = float3(0, 0, 0);
-            surface.Metallic = 0;
-            surface.Smoothness = 0.5;
-            surface.Occlusion = 1;
+            surface.Metallic = _Property_4dd4121f09044c439b56ce25ae4f755e_Out_0_Float;
+            surface.Smoothness = _Property_6cc42ba10cc24666a88c8642750a7722_Out_0_Float;
+            surface.Occlusion = _Property_ff73816ec4a046898753e82b31bb6e22_Out_0_Float;
             surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
             surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
@@ -876,6 +885,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -1054,6 +1066,9 @@ Shader "CustomShaders/WallsHide"
             float4 _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4 = _Tint;
             float4 _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4;
             Unity_Multiply_float4_float4(_SampleTexture2D_2241d3ac1834462492f448c3607d56d4_RGBA_0_Vector4, _Property_f6789ba6a4034e0f9e935d37d25559fd_Out_0_Vector4, _Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4);
+            float _Property_4dd4121f09044c439b56ce25ae4f755e_Out_0_Float = _Metallic;
+            float _Property_6cc42ba10cc24666a88c8642750a7722_Out_0_Float = _Smoothness;
+            float _Property_ff73816ec4a046898753e82b31bb6e22_Out_0_Float = _Ambient_Occlusion;
             float4 _ScreenPosition_696ff4fe751d44ce87bb26273ad1eae5_Out_0_Vector4 = float4(IN.NDCPosition.xy, 0, 0);
             float2 _Property_79e8072d926b46bc929bca879837b346_Out_0_Vector2 = _Position;
             float2 _Remap_878ec42c85ec4b408dcb5912a701eaed_Out_3_Vector2;
@@ -1095,9 +1110,9 @@ Shader "CustomShaders/WallsHide"
             surface.BaseColor = (_Multiply_ac939a0fef8a41ecb779fcd8537732d9_Out_2_Vector4.xyz);
             surface.NormalTS = IN.TangentSpaceNormal;
             surface.Emission = float3(0, 0, 0);
-            surface.Metallic = 0;
-            surface.Smoothness = 0.5;
-            surface.Occlusion = 1;
+            surface.Metallic = _Property_4dd4121f09044c439b56ce25ae4f755e_Out_0_Float;
+            surface.Smoothness = _Property_6cc42ba10cc24666a88c8642750a7722_Out_0_Float;
+            surface.Occlusion = _Property_ff73816ec4a046898753e82b31bb6e22_Out_0_Float;
             surface.Alpha = _Step_842f20c129864787bf6e26b76c1669e6_Out_2_Float;
             surface.AlphaClipThreshold = _Float_d515268b3cd4425fbd6d8c9d62368740_Out_0_Float;
             return surface;
@@ -1360,6 +1375,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -1824,6 +1842,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -2289,6 +2310,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -2755,6 +2779,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -3203,6 +3230,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         
@@ -3652,6 +3682,9 @@ Shader "CustomShaders/WallsHide"
         float _NoiseScale;
         float _NoiseStrength;
         float _AlphaClip;
+        float _Metallic;
+        float _Smoothness;
+        float _Ambient_Occlusion;
         CBUFFER_END
         
         

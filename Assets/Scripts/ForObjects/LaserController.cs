@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
 public class LaserController : MonoBehaviour
 {
@@ -55,9 +53,9 @@ public class LaserController : MonoBehaviour
             }
             else
             {
-                CurrentColliderSize(hit.distance + transform.position.z + 0.2f);
+                CurrentColliderSize(hit.distance + 0.5f);
                 laserHitPlayer = false;
-                _lr.SetPosition(1, hit.point + transform.forward * 0.1f);
+                _lr.SetPosition(1, hit.point);
             }
         }
         else

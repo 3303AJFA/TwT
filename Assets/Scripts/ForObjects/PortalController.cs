@@ -6,6 +6,7 @@ namespace ForObjects
     {
         public PortalController Other;
         public Camera PortalView;
+        public Transform portalVisual;
         public Transform portalCamera;
         public Transform player;
         public Transform playerCamera;
@@ -13,7 +14,7 @@ namespace ForObjects
         private void Start()
         {
             Other.PortalView.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
-            GetComponentInChildren<MeshRenderer>().sharedMaterial.mainTexture = Other.PortalView.targetTexture;
+            portalVisual.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = Other.PortalView.targetTexture;
         }
 
         private void Update()
