@@ -20474,6 +20474,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Transmitter
       objectReference: {fileID: 0}
+    - target: {fileID: 9201097751188312800, guid: 6572d94352ba08a4a8fa10dd17e6c829,
+        type: 3}
+      propertyPath: m_Mass
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

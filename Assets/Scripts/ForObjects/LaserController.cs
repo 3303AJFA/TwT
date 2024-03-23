@@ -5,9 +5,12 @@ public class LaserController : MonoBehaviour
     private LineRenderer _lr;
     private Collider _laserCollider;
     private Rigidbody _playerRigidbody;
+    private Animator _animator;
+    private PlayerController _playerController;
+    
     
     [SerializeField] private float laserForce;
-    [HideInInspector]public bool laserHitPlayer = false;
+    [HideInInspector] public bool laserHitPlayer = false;
     private float _maxLaserDistance = 100f;
     private int _layerMask;
 
@@ -35,20 +38,35 @@ public class LaserController : MonoBehaviour
                 if (_playerRigidbody == null)
                 {
                     _playerRigidbody = hit.collider.GetComponent<Rigidbody>();
+                    _animator = _playerRigidbody.GetComponentInChildren<Animator>();
+                    _playerController = _playerRigidbody.GetComponent<PlayerController>();
                 }
                 
                 if (_playerRigidbody != null)
                 {
-                    // Вычислить направление от попадания лазера к центру игрока
-                    Vector3 forceDirection = _playerRigidbody.transform.position - hit.point;
+                    if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
+                    {
+                        _playerController.isDashing = false;
+                        _animator.SetBool("isDash", false);
+                        
+                        Vector3 pushDirection = _playerRigidbody.transform.position - hit.point;
+                        pushDirection.Normalize();
                 
-                    // Нормализовать направление
-                    forceDirection.Normalize();
+                        // Приложить силу к игроку в направлении касательной от лазера
+                        _playerRigidbody.AddForce(pushDirection * laserForce * 2, ForceMode.Impulse);
+                        laserHitPlayer = true;
+                    }
+                    else
+                    {
+                        Vector3 pushDirection = _playerRigidbody.transform.position - hit.point;
+                        pushDirection.Normalize();
                 
-                    // Приложить силу к игроку в направлении касательной от лазера
-                    _playerRigidbody.AddForce(forceDirection * laserForce, ForceMode.Impulse);
-                    laserHitPlayer = true;
-                    Debug.Log("PLAYER TOUCH LASER");
+                        // Приложить силу к игроку в направлении касательной от лазера
+                        _playerRigidbody.AddForce(pushDirection * laserForce, ForceMode.Impulse);
+                        laserHitPlayer = true;
+                    }
+                    
+                    //Debug.Log("PLAYER TOUCH LASER");
                 }
             }
             else

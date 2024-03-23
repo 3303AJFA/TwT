@@ -25,14 +25,14 @@ public class DashController : MonoBehaviour
     {
         if ((context.performed && !_playerController.isDashing && CanDash()) && _playerController.lastMovementDirection != Vector3.zero)
         {
-            Debug.Log("Dash!!!");
+            //Debug.Log("Dash!!!");
             if (_playerController.movement.magnitude > 0.01f)
             {
                 
                 StartCoroutine(PerformDash());
             }
                 
-            Debug.Log("Dash END");
+            //Debug.Log("Dash END");
         }
         
     }
@@ -47,6 +47,10 @@ public class DashController : MonoBehaviour
         while (Time.fixedTime < _lastDashTime + dashTime)
         {
             _playerController.rb.MovePosition(transform.position + dashDirection * dashSpeed * Time.fixedDeltaTime);
+
+            if (!_playerController.isDashing)
+                yield break;
+            
             yield return null;
         }
         

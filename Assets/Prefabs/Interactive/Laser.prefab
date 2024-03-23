@@ -78,7 +78,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 128
@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9770485a7e76e834ca0f63c9eb0fad04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserForce: 10
+  laserForce: 20
   laserHitPlayer: 0
 --- !u!1001 &7808396954497818814
 PrefabInstance:

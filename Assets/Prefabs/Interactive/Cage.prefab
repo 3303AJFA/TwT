@@ -26,7 +26,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.21
+      value: 10.47
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
@@ -36,7 +36,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.26
+      value: 20.462
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
@@ -155,7 +155,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6585858367275873432}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 2
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

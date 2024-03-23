@@ -356,6 +356,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8175096560472801465, guid: 13c3223ad78751446b568b4891efc7ca,
         type: 3}
+      propertyPath: dashTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8175096560472801465, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
       propertyPath: dashSpeed
       value: 8
       objectReference: {fileID: 0}
