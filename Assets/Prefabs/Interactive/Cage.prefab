@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8863667214212606868, guid: 4de1923aff4d8194f9fc4114625c80e8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 474ad0f14e0737948b27a0f29d10fc88, type: 2}
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -26,17 +31,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.47
+      value: 9.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.85
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 20.462
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
@@ -103,6 +108,16 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Interactive
       objectReference: {fileID: 0}
+    - target: {fileID: -895306380916907690, guid: 4de1923aff4d8194f9fc4114625c80e8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 474ad0f14e0737948b27a0f29d10fc88, type: 2}
+    - target: {fileID: -179043893165741425, guid: 4de1923aff4d8194f9fc4114625c80e8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 01bd521501b52c74db1183249172e34b, type: 2}
     - target: {fileID: 243041194690276544, guid: 4de1923aff4d8194f9fc4114625c80e8,
         type: 3}
       propertyPath: m_Layer
@@ -128,6 +143,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Interactive
       objectReference: {fileID: 0}
+    - target: {fileID: 2942529372655497076, guid: 4de1923aff4d8194f9fc4114625c80e8,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 14e299d3734fbd849977948f83a8bfce, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: d4f6520566e5670459c449f71335b78a,
     type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: ee2365e9f2f6480489a0174a2c019d6a,
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 025d53691c90a4b77945a814a6cbb47e,
     type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -18103,7 +18103,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19417,11 +19417,6 @@ PrefabInstance:
       propertyPath: laserReciever
       value: 
       objectReference: {fileID: 842857382}
-    - target: {fileID: 4687661172988725587, guid: 730fb18995fc62c4fb8fd8ebcb6f351e,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7276706565602295323, guid: 730fb18995fc62c4fb8fd8ebcb6f351e,
         type: 3}
       propertyPath: m_LocalPosition.x

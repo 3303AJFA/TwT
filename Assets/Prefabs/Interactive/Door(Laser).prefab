@@ -256,11 +256,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -302736238102332845, guid: fb24265b55de0694897e9004e878cc9e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b5d9ccd6151c2ec4ba91c7c6ae5f1fcb, type: 2}
     - target: {fileID: 919132149155446097, guid: fb24265b55de0694897e9004e878cc9e,
         type: 3}
       propertyPath: m_Name
       value: Door(Laser)
       objectReference: {fileID: 0}
+    - target: {fileID: 5696494855991954268, guid: fb24265b55de0694897e9004e878cc9e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 474ad0f14e0737948b27a0f29d10fc88, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

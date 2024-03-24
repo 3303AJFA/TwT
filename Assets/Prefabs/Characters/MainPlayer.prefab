@@ -66,7 +66,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -0.15
+  near clip plane: -2
   far clip plane: 5000
   field of view: 40
   orthographic: 1
@@ -318,6 +318,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3413777626527647388, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
     - target: {fileID: 3862028692943298972, guid: 13c3223ad78751446b568b4891efc7ca,
         type: 3}
       propertyPath: _layerMask.m_Bits
