@@ -5988,7 +5988,7 @@ GameObject:
   - component: {fileID: 669763169}
   - component: {fileID: 669763171}
   - component: {fileID: 669763170}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: TriggerForTransition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9792,7 +9792,7 @@ GameObject:
   - component: {fileID: 986353105}
   - component: {fileID: 986353107}
   - component: {fileID: 986353106}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: TriggerForTransition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10620,7 +10620,7 @@ GameObject:
   - component: {fileID: 1035403986}
   - component: {fileID: 1035403985}
   - component: {fileID: 1035403984}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Roof 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11962,7 +11962,7 @@ GameObject:
   - component: {fileID: 1165332197}
   - component: {fileID: 1165332196}
   - component: {fileID: 1165332195}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Roof 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14466,7 +14466,7 @@ GameObject:
   - component: {fileID: 1359193116}
   - component: {fileID: 1359193115}
   - component: {fileID: 1359193114}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: TriggerForTransition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16496,7 +16496,7 @@ GameObject:
   - component: {fileID: 1494931982}
   - component: {fileID: 1494931981}
   - component: {fileID: 1494931980}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Roof 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -5,16 +5,33 @@ public class CloneController : MonoBehaviour
 {
     [SerializeField]private GameObject playerClone;
     [SerializeField]private Rigidbody rbPlayer;
-    
-    private Transform _cloneTransform;
+
+    private Vector3 _mousePosition;
+    private Vector3 _spawnPosition;
     private GameObject _clone;
-    
+    private int _layerMask;
 
     public void OnLeftMouseButton(InputAction.CallbackContext context)
     {
         if (context.performed && _clone == null)
         {
-            _clone = Instantiate(playerClone, rbPlayer.transform.position, rbPlayer.transform.rotation,_cloneTransform);
+            _mousePosition = Input.mousePosition;
+            
+            Vector3 viewportPosition = Camera.main.ScreenToViewportPoint(_mousePosition);
+            
+            Ray ray = Camera.main.ViewportPointToRay(viewportPosition);
+            
+            _layerMask = ~(1 << LayerMask.NameToLayer("Roof"));
+            
+            RaycastHit hit;
+            
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _layerMask))
+            {
+                Debug.Log(hit.collider);
+                _spawnPosition = hit.point;
+            }
+            
+            _clone = Instantiate(playerClone, _spawnPosition, rbPlayer.transform.rotation);
             _clone.tag = "Clone";
         }
     }

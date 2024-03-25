@@ -325,6 +325,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
     - target: {fileID: 3862028692943298972, guid: 13c3223ad78751446b568b4891efc7ca,
         type: 3}
+      propertyPath: _hideShader
+      value: 
+      objectReference: {fileID: -6465566751694194690, guid: 6ebad332a4d70114a8e080be32ac4601,
+        type: 3}
+    - target: {fileID: 3862028692943298972, guid: 13c3223ad78751446b568b4891efc7ca,
+        type: 3}
       propertyPath: _layerMask.m_Bits
       value: 8960
       objectReference: {fileID: 0}
