@@ -101,20 +101,6 @@ public class ToonShaderGUI : ShaderGUI
             materialEditor.RangeProperty(FindProperty("_StrongRimStrength", properties), "Strong rim strength");
             EditorGUI.indentLevel--;
         }
-        
-        //======= Show player Properties
-        
-        EditorGUILayout.Space(4f);
-        _showPlayerPropsVisible = EditorGUILayout.Foldout(_showPlayerPropsVisible, "Show player", EditorStyles.foldoutHeader);
-        if (_showPlayerPropsVisible)
-        {
-            EditorGUI.indentLevel++;
-            materialEditor.RangeProperty(FindProperty("_Size", properties), "Circle size");
-            materialEditor.RangeProperty(FindProperty("_AlphaClip", properties), "Alpha clip");
-            materialEditor.RangeProperty(FindProperty("_NoiseScale", properties), "Noise scale");
-            materialEditor.RangeProperty(FindProperty("_NoiseStrength", properties), "Noise strength");
-            EditorGUI.indentLevel--;
-        }
     }
 
     private bool DrawEmissionToggle(MaterialEditor materialEditor, MaterialProperty prop)
