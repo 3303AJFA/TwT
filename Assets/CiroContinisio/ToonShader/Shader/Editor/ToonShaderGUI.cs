@@ -12,7 +12,6 @@ public class ToonShaderGUI : ShaderGUI
     private ShadingStyle _shadingStyle;
 
     private bool _toonPropsVisible = true;
-    private bool _showPlayerPropsVisible = true;
     private bool _emission;
     
 
