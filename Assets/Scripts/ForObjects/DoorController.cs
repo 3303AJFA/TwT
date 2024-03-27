@@ -39,13 +39,13 @@ public class DoorController : MonoBehaviour, IDataPersistence
         if ((triggerAreaController.door && transform.position.y < _openDoorStep) && !isDoorStop)
         {
             transform.Translate(Vector3.forward * _maximumDoorTranslate * Time.deltaTime);
-            Debug.Log(transform.position + " " + _originalPosition + " " + _openDoorStep);
+            //Debug.Log(transform.position + " " + _originalPosition + " " + _openDoorStep);
             isDoorStop = false;
         }
         else if ((!triggerAreaController.door && transform.position.y > _originalPosition.y) && !isDoorStop && !uploaded)
         {
             transform.Translate(Vector3.back * _maximumDoorTranslate * Time.deltaTime);
-            Debug.Log(transform.position + " " + _originalPosition);
+            //Debug.Log(transform.position + " " + _originalPosition);
             isDoorStop = false;
         }
     }

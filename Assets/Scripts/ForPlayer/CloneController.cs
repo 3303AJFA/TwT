@@ -10,6 +10,8 @@ public class CloneController : MonoBehaviour
     private Vector3 _spawnPosition;
     private GameObject _clone;
     private int _layerMask;
+    
+    public static bool isClone = false;
 
     public void OnLeftMouseButton(InputAction.CallbackContext context)
     {
@@ -33,6 +35,8 @@ public class CloneController : MonoBehaviour
             
             _clone = Instantiate(playerClone, _spawnPosition, rbPlayer.transform.rotation);
             _clone.tag = "Clone";
+
+            isClone = true;
         }
     }
     
@@ -41,6 +45,7 @@ public class CloneController : MonoBehaviour
         if (context.performed && _clone != null && !OpenMenuUI.GameIsPaused)
         {
             Destroy(_clone);
+            isClone = false;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SaveAfterDoor : MonoBehaviour, IDataPersistence
@@ -51,6 +52,7 @@ public class SaveAfterDoor : MonoBehaviour, IDataPersistence
         if (other.CompareTag("Player") && !isSaved)
         {
             isSaved = true;
+            DataPersistenceManager.instance.SaveGame();
         }
     }
 }
