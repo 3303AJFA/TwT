@@ -31,7 +31,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.85
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
@@ -41,7 +41,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
@@ -56,12 +56,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
@@ -90,7 +90,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cba099786890e7e47830749a653a33bc,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8379522132548836918}
+      addedObject: {fileID: 7594860439388951146}
   m_SourcePrefab: {fileID: 100100000, guid: cba099786890e7e47830749a653a33bc, type: 3}
 --- !u!1 &1701325709431367776 stripped
 GameObject:
@@ -98,8 +98,8 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1971797521565504817}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &8379522132548836918
-BoxCollider:
+--- !u!64 &7594860439388951146
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -116,6 +116,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.020577349, y: 0.021154694, z: 0.021154694}
-  m_Center: {x: 0, y: -0.00028867502, z: -0.00028867502}
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2584102757377901635, guid: cba099786890e7e47830749a653a33bc, type: 3}

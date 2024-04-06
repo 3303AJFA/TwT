@@ -28,7 +28,7 @@ public class SaveAfterDoor : MonoBehaviour, IDataPersistence
         if (isSaved && !_isLoaded)
         {
             data.playerPosition = savePoint.position;
-            data.playerPosition.y = 0;
+            data.playerPosition.y = 1;
             
             if (data.checkPoints.ContainsKey(id))
             {
