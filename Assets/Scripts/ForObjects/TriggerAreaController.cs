@@ -23,7 +23,7 @@ public class TriggerAreaController : MonoBehaviour
         if (door && holdParent.childCount == 0)
         {
             door = false;
-            Debug.Log("door: close");
+            //Debug.Log("door: close");
         }
     }
 

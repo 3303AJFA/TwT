@@ -12,7 +12,7 @@ public class GameData
     
     public GameData()
     {
-        playerPosition = Vector3.zero;
+        playerPosition = new Vector3(2,1.2f,2);
         doorPositions = new SerializableDictionary<string, Vector3>();
         checkPoints = new SerializableDictionary<string, bool>();
         isLoaded = new SerializableDictionary<string, bool>();

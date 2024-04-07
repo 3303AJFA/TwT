@@ -4,26 +4,20 @@ public class PlayerMovement : MonoBehaviour
 {
     private PlayerController _playerController;
     private Rigidbody _rb;
-    private bool isOnIce = false;
+    /*private bool isOnIce = false;
     private float friction = 1.0f;
-    private float iceFriction = 1.2f;
+    private float iceFriction = 1.2f;*/
     
     void Start()
     {
         _playerController = GetComponent<PlayerController>();
         _rb = GetComponent<Rigidbody>();
     }
-
-    /*public void MovePlayer(Vector3 direction)
-    {
-        Vector3 movement = _playerController.movement * (_playerController.speed * Time.fixedDeltaTime);
-        _rb.MovePosition(_rb.position + movement - direction);
-    }*/
     
     public void MovePlayer()
     {
         Vector3 movement = _playerController.movement * (_playerController.speed * Time.fixedDeltaTime);
-        if (isOnIce)
+        /*if (isOnIce)
         {
             movement *= iceFriction;
             _rb.AddForce(movement, ForceMode.VelocityChange);
@@ -32,19 +26,20 @@ public class PlayerMovement : MonoBehaviour
         {
             movement *= friction;
             _rb.MovePosition(_rb.position + movement);
-        }
+        }*/
+        _rb.MovePosition(_rb.position + movement);
     }
     
-    private void OnCollisionEnter(Collision other)
+    /*private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Ice"))
         {
             isOnIce = true;
             friction = iceFriction;
         }
-    }
+    }*/
     
-    private void OnCollisionExit(Collision other)
+    /*private void OnCollisionExit(Collision other)
     {
         if (other.gameObject.CompareTag("Ice"))
         {
@@ -52,5 +47,5 @@ public class PlayerMovement : MonoBehaviour
             friction = 1.0f;
             print("left ice");
         }
-    }
+    }*/
 }

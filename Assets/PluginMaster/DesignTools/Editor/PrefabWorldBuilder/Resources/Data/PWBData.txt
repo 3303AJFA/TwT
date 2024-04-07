@@ -12,7 +12,7 @@
     "_tempCollidersAction": 1,
     "_paletteManager": {
         "_selectedPaletteIdx": 0,
-        "_selectedBrushIdx": 5,
+        "_selectedBrushIdx": -1,
         "_showBrushName": false,
         "_viewList": false,
         "_showTabsInMultipleRows": false,
@@ -460,7 +460,8 @@
                     "Ice",
                     "Laser",
                     "Portal",
-                    "Barrier"
+                    "Barrier",
+                    "FoundSolutionPanel"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -2150,7 +2151,8 @@
                     "Ice",
                     "Laser",
                     "Portal",
-                    "Barrier"
+                    "Barrier",
+                    "FoundSolutionPanel"
                 ]
             }
         ],
@@ -2826,15 +2828,15 @@
         "_settings": {
             "_snappingEnabled": false,
             "_snappingOn": {
-                "x": false,
-                "y": false,
+                "x": true,
+                "y": true,
                 "z": false
             },
             "_visibleGrid": false,
             "_gridOn": {
                 "x": false,
-                "y": true,
-                "z": false
+                "y": false,
+                "z": true
             },
             "_lockedGrid": false,
             "_step": {

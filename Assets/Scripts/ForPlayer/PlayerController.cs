@@ -49,26 +49,25 @@ public class PlayerController : MonoBehaviour
         
         movement = _cameraRight * _movementInput.x + _cameraForward * _movementInput.z;
 
-        if(isDashing){
+        if(isDashing)
             playerAnimations.DashAnimation(FrontDir2Anim(movement),isDashing);
-        }
         else if(movement.x == 0 && movement.z == 0)
-        { 
             playerAnimations.IdleAnimation(Sight2Anim());
-        }
         else
-        {
             playerAnimations.WalkAnimation(Sight2Anim());
-        }
+        
         if (movement.magnitude > 1)
             movement.Normalize();
+
         if (!isDashing)
         {
             if (movement.magnitude > 0)
                 lastMovementDirection = movement.normalized;
 
             _playerMovement.MovePlayer();
-        }    
+        }
+            
+         
     }  
     
     private Vector3 Sight2Anim(){
@@ -90,7 +89,4 @@ public class PlayerController : MonoBehaviour
         
         return dir;
     }
-    
-
-    
 }
