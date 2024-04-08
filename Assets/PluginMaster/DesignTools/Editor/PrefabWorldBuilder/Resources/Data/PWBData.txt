@@ -12,7 +12,7 @@
     "_tempCollidersAction": 1,
     "_paletteManager": {
         "_selectedPaletteIdx": 0,
-        "_selectedBrushIdx": -1,
+        "_selectedBrushIdx": 3,
         "_showBrushName": false,
         "_viewList": false,
         "_showTabsInMultipleRows": false,
@@ -933,7 +933,7 @@
                 "z": 0.0
             },
             "_spacingType": 0,
-            "_minSpacing": 1.0577349662780762,
+            "_minSpacing": 1.0,
             "_randomizePositions": true,
             "_randomness": 1.0,
             "_simData": {
@@ -1701,13 +1701,13 @@
             "_cellSizeType": 0,
             "_cellSize": {
                 "x": 1.028867483139038,
-                "y": 1.0577350854873658
+                "y": 1.0577352046966553
             },
             "_rotation": {
-                "x": 0.0,
+                "x": 0.7071067690849304,
                 "y": 0.0,
                 "z": 0.0,
-                "w": 1.0
+                "w": 0.7071067690849304
             },
             "_spacing": {
                 "x": 0.0,
@@ -2372,9 +2372,9 @@
             "_createTempColliders": true,
             "_space": 0,
             "_spacing": {
-                "x": -0.05999999865889549,
-                "y": -0.05999999865889549,
-                "z": 0.0
+                "x": 0.0,
+                "y": 0.0,
+                "z": -0.05773499980568886
             },
             "_spacingType": 1,
             "_multiplier": {
@@ -2692,15 +2692,15 @@
             "_sameParentAsSource": true,
             "_mirrorPose": {
                 "position": {
-                    "x": 25.086563110351564,
-                    "y": -0.400592565536499,
-                    "z": 3.5
+                    "x": 39.375511169433597,
+                    "y": 0.0,
+                    "z": 0.9167437553405762
                 },
                 "rotation": {
                     "x": 0.0,
-                    "y": 8.742277657347586e-8,
+                    "y": 0.7071067690849304,
                     "z": 0.0,
-                    "w": 1.0
+                    "w": 0.7071067690849304
                 }
             },
             "_invertScale": false,
@@ -2830,23 +2830,23 @@
             "_snappingOn": {
                 "x": true,
                 "y": true,
-                "z": false
+                "z": true
             },
             "_visibleGrid": false,
             "_gridOn": {
                 "x": false,
-                "y": false,
-                "z": true
+                "y": true,
+                "z": false
             },
             "_lockedGrid": false,
             "_step": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 1.0577348470687867,
+                "y": 1.0577348470687867,
+                "z": 1.028867483139038
             },
             "_origin": {
                 "x": 0.0,
-                "y": -0.400592565536499,
+                "y": 1.5288419723510743,
                 "z": 0.0
             },
             "_rotation": {
@@ -2858,7 +2858,7 @@
             "_showPositionHandle": true,
             "_showRotationHandle": false,
             "_showScaleHandle": false,
-            "_radialGridEnabled": true,
+            "_radialGridEnabled": false,
             "_radialStep": 1.0,
             "_radialSectors": 8,
             "_snapToRadius": true,

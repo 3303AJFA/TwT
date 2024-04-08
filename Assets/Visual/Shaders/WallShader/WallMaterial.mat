@@ -48,11 +48,11 @@ Material:
     - _NoiseStrength: 0.75
     - _QueueControl: -1
     - _QueueOffset: 0
-    - _Size: 1
+    - _Size: 0
     - _Smoothness: 0
     m_Colors:
     - _Position: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _Tint: {r: 0.8113207, g: 0.8113207, b: 0.8113207, a: 0}
+    - _Tint: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &7588101615491372367
 MonoBehaviour:

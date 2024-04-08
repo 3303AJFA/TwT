@@ -1,4 +1,4 @@
-using System.Collections;
+
 using UnityEngine;
 
 public class FoundSolutionUI : MonoBehaviour
