@@ -1,12 +1,11 @@
-﻿#if !SHADERGRAPH_PREVIEW
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-#endif
-
-#ifndef LIGHTING_CEL_SHADED_INCLUDED
+﻿#ifndef LIGHTING_CEL_SHADED_INCLUDED
 #define LIGHTING_CEL_SHADED_INCLUDED
 
 #ifndef SHADERGRAPH_PREVIEW
+
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+
 struct EdgeConstants
 {
     float diffuse;
