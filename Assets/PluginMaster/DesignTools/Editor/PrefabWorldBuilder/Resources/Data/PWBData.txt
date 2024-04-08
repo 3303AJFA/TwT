@@ -2830,13 +2830,13 @@
             "_snappingOn": {
                 "x": true,
                 "y": true,
-                "z": false
+                "z": true
             },
             "_visibleGrid": false,
             "_gridOn": {
                 "x": false,
-                "y": false,
-                "z": true
+                "y": true,
+                "z": false
             },
             "_lockedGrid": false,
             "_step": {

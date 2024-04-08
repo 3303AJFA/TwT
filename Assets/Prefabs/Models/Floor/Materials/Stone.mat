@@ -21,21 +21,17 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Stone
-  m_Shader: {fileID: -6465566751694194690, guid: a49e257a99288c54fab4e30877910539,
+  m_Shader: {fileID: -6465566751694194690, guid: 3bb35f7f86ffc45c2aa6fc4291f787fc,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ADDITIONAL_LIGHTS
-  - _ADDITIONAL_LIGHT_SHADOWS
-  - _MAIN_LIGHT_SHADOWS
-  - _MAIN_LIGHT_SHADOWS_CASCADE
-  - _SHADOWS_SOFT
+  - _SHADING_STYLE_SKIN_AND_TEXTILES
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -104,8 +100,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ADDITIONAL_LIGHTS: 1
-    - _ADDITIONAL_LIGHT_SHADOWS: 1
     - _AdditionalLightCutoffPoint: 0.8
     - _AlphaClip: 0
     - _AlphaToMask: 0
@@ -120,20 +114,11 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EdgeDiffuse: 0.5
-    - _EdgeDistanceAttenuation: 0.509
-    - _EdgeRim: 0.496
-    - _EdgeRimOffset: 0.513
-    - _EdgeShadowAttenuation: 0.504
-    - _EdgeSpecular: 0.509
-    - _EdgeSpecularOffset: 0.504
     - _EnvironmentReflections: 1
     - _ExtraBandThickness: 0.3
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MAIN_LIGHT_SHADOWS: 1
-    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _Metallic: 0
     - _Mode: 0
     - _NoiseScale: 100
@@ -142,12 +127,10 @@ Material:
     - _PaintbrushStrokesAngle: 40
     - _PaintbrushStrokesSize: 1
     - _Parallax: 0.02
-    - _QueueControl: 0
+    - _QueueControl: -1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RimThreshold: 0.5
     - _SHADING_STYLE: 0
-    - _SHADOWS_SOFT: 1
     - _ShadowsFloor: 0.25
     - _Size: 1
     - _Smoothness: 0.457
@@ -168,7 +151,6 @@ Material:
     - _Color: {r: 0.13826191, g: 0.13071954, b: 0.13857087, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _PlayerPosition: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 0.7264151, g: 0.7229886, b: 0.7229886, a: 0}
   m_BuildTextureStacks: []
