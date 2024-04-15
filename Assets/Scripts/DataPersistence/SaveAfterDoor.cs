@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SaveAfterDoor : MonoBehaviour, IDataPersistence
@@ -23,7 +21,7 @@ public class SaveAfterDoor : MonoBehaviour, IDataPersistence
         data.isLoaded.TryGetValue(id, out _isLoaded);
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
         if (isSaved && !_isLoaded)
         {

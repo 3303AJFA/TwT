@@ -162,7 +162,7 @@
         "_unsavedProfile": {
             "_paintOnMeshesWithoutCollider": false,
             "_paintOnSelectedOnly": false,
-            "_paintOnPalettePrefabs": true,
+            "_paintOnPalettePrefabs": false,
             "_mode": 0,
             "_paralellToTheSurface": true,
             "_repeat": false,
@@ -603,7 +603,7 @@
                 "z": 0.0
             },
             "_spacingType": 0,
-            "_minSpacing": 1.000000238418579,
+            "_minSpacing": 1.0,
             "_randomizePositions": true,
             "_randomness": 1.0,
             "_paintOnSurfaceToolSettings": {
@@ -634,7 +634,8 @@
                 "Ice",
                 "Laser",
                 "Portal",
-                "Barrier"
+                "Barrier",
+                "FoundSolutionPanel"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -1234,12 +1235,7 @@
                 }
             }
         },
-        "_sceneItems": [
-            {
-                "_sceneGUID": "c5d12e7258efba749a413ae4f78fe1b4",
-                "_items": []
-            }
-        ],
+        "_sceneItems": [],
         "_showPreexistingElements": true
     },
     "_shapeManager": {
@@ -1400,8 +1396,8 @@
             "_mode": 0,
             "_paralellToTheSurface": true,
             "_projectionDirection": {
-                "x": -1.0,
-                "y": 0.0,
+                "x": 0.0,
+                "y": -1.0,
                 "z": 0.0
             },
             "_objectsOrientedAlongTheLine": true,
@@ -1531,8 +1527,8 @@
             "_sidesCount": 5,
             "_axisNormalToSurface": true,
             "_normal": {
-                "x": 1.0,
-                "y": 0.0,
+                "x": 0.0,
+                "y": 1.0,
                 "z": 0.0
             },
             "_projectInNormalDir": true
@@ -1695,19 +1691,19 @@
         "_unsavedProfile": {
             "_paintOnMeshesWithoutCollider": false,
             "_paintOnSelectedOnly": false,
-            "_paintOnPalettePrefabs": true,
+            "_paintOnPalettePrefabs": false,
             "_mode": 0,
             "_paralellToTheSurface": true,
             "_cellSizeType": 0,
             "_cellSize": {
-                "x": 1.028867483139038,
-                "y": 1.0577352046966553
+                "x": 1.0,
+                "y": 1.0
             },
             "_rotation": {
-                "x": 0.7071067690849304,
+                "x": 0.0,
                 "y": 0.0,
                 "z": 0.0,
-                "w": 0.7071067690849304
+                "w": 1.0
             },
             "_spacing": {
                 "x": 0.0,
@@ -1837,12 +1833,7 @@
                 }
             }
         },
-        "_sceneItems": [
-            {
-                "_sceneGUID": "c5d12e7258efba749a413ae4f78fe1b4",
-                "_items": []
-            }
-        ],
+        "_sceneItems": [],
         "_showPreexistingElements": true
     },
     "_replacerManager": {
@@ -2188,7 +2179,8 @@
                 "Ice",
                 "Laser",
                 "Portal",
-                "Barrier"
+                "Barrier",
+                "FoundSolutionPanel"
             ]
         }
     },
@@ -2374,7 +2366,7 @@
             "_spacing": {
                 "x": 0.0,
                 "y": 0.0,
-                "z": -0.05773499980568886
+                "z": 0.0
             },
             "_spacingType": 1,
             "_multiplier": {
@@ -2692,15 +2684,15 @@
             "_sameParentAsSource": true,
             "_mirrorPose": {
                 "position": {
-                    "x": 39.375511169433597,
+                    "x": 0.0,
                     "y": 0.0,
-                    "z": 0.9167437553405762
+                    "z": 0.0
                 },
                 "rotation": {
                     "x": 0.0,
-                    "y": 0.7071067690849304,
+                    "y": 0.7071068286895752,
                     "z": 0.0,
-                    "w": 0.7071067690849304
+                    "w": 0.7071068286895752
                 }
             },
             "_invertScale": false,
@@ -2828,25 +2820,25 @@
         "_settings": {
             "_snappingEnabled": false,
             "_snappingOn": {
-                "x": true,
-                "y": true,
+                "x": false,
+                "y": false,
                 "z": false
             },
             "_visibleGrid": false,
             "_gridOn": {
                 "x": false,
-                "y": false,
-                "z": true
+                "y": true,
+                "z": false
             },
             "_lockedGrid": false,
             "_step": {
-                "x": 1.0577348470687867,
-                "y": 1.0577348470687867,
-                "z": 1.028867483139038
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
             "_origin": {
                 "x": 0.0,
-                "y": 1.5288419723510743,
+                "y": 0.0,
                 "z": 0.0
             },
             "_rotation": {

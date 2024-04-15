@@ -31,18 +31,19 @@ public class LaserTransmitter : MonoBehaviour
     
     private void OnCollisionEnter(Collision other)
     {
-        if (other.collider.CompareTag("Laser"))
+        if (other.collider.CompareTag("Laser") && !_isTransmit)
         {
             if (_laserController == null) _laserController = other.collider.GetComponent<LaserController>();
             
             if (!_laserController.laserHitPlayer) CloneObject(other);
-            
+
+            _isTransmit = true;
         }
     }
 
     private void OnCollisionStay(Collision other)
     {
-        if (other.collider.CompareTag("Laser") && _cloneObject != null && !_laserController.laserHitPlayer)
+        if (other.collider.CompareTag("Laser") && _cloneObject != null && !_laserController.laserHitPlayer && !_isTransmit)
         {
             LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
 
@@ -54,6 +55,8 @@ public class LaserTransmitter : MonoBehaviour
 
             _cloneObject.transform.position = cloneLineRenderer.GetPosition(0);
             _cloneObject.transform.rotation = point.rotation;
+            
+            _isTransmit = true;
         }
     }
 
@@ -64,6 +67,7 @@ public class LaserTransmitter : MonoBehaviour
             if (other.collider.CompareTag("Laser") && !_laserController.laserHitPlayer)
             {
                 Destroy(_cloneObject);
+                _isTransmit = false;
             }
         }
     }

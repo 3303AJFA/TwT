@@ -115,7 +115,7 @@ public class RoofController : MonoBehaviour, IDataPersistence
         data.isExited.TryGetValue(id, out _isExiting);
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
         if (data.isExited.ContainsKey(id))
         {

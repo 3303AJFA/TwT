@@ -31,6 +31,7 @@ public class SceneManagerUI : MonoBehaviour
     public void ContinueGame()
     {
         DisableMenuButtons();
+        DataPersistenceManager.instance.SaveGame();
         SceneManager.LoadSceneAsync("Level_001");
     }
 

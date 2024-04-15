@@ -37,8 +37,11 @@ public class PortalTeleport : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var m_collider = wall.GetComponent<Collider>();
-        m_collider.isTrigger = true;
+        var m_collider = wall.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < m_collider.Length; i++)
+        {
+            m_collider[i].isTrigger = true;
+        }
         
         if (other.CompareTag("Player"))
         {
@@ -64,7 +67,8 @@ public class PortalTeleport : MonoBehaviour
             // Увеличение размера клонированного объекта
             if (_cloneObject != null)
             {
-                _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                var originalLocalScale = other.transform.localScale;
+                _cloneObject.transform.localScale = new Vector3(originalLocalScale.x / 2f, originalLocalScale.y / 2f, originalLocalScale.z / 2f);
 
                 // Установка новой позиции клонированного объекта относительно портала
                 _cloneObject.transform.position = receiver.position + directionToPortal * distance;
@@ -89,11 +93,14 @@ public class PortalTeleport : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        var m_collider = wall.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < m_collider.Length; i++)
+        {
+            m_collider[i].isTrigger = false;
+        }
+        
         if (other.CompareTag("Player"))
         {
-            var m_collider = wall.GetComponent<Collider>();
-            m_collider.isTrigger = false;
-            
             playerIsOverlapping = false;
         }
 

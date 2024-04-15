@@ -9,7 +9,7 @@ public class CloneController : MonoBehaviour
     private Vector3 _mousePosition;
     private Vector3 _spawnPosition;
     private GameObject _clone;
-    private int _layerMask;
+    [SerializeField] private LayerMask layerMask;
     
     public static bool isClone = false;
 
@@ -23,11 +23,11 @@ public class CloneController : MonoBehaviour
             
             Ray ray = Camera.main.ViewportPointToRay(viewportPosition);
             
-            _layerMask = ~(1 << LayerMask.NameToLayer("Roof"));
+            //layerMask = ~(1 << LayerMask.NameToLayer("Roof"));
             
             RaycastHit hit;
             
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _layerMask))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
                 Debug.Log(hit.collider);
                 _spawnPosition = hit.point;

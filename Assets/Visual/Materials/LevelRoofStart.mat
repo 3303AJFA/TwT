@@ -81,6 +81,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_303d9e8cb9e24510873f9701e5cfe5ff_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -141,11 +145,12 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 0.85882354}
     - _Color: {r: 0.7075472, g: 0.24363652, b: 0.078431375, a: 0}
-    - _DisolveColor: {r: 0.15294118, g: 0.38431373, b: 0.41568628, a: 0}
+    - _DisolveColor: {r: 0.24313726, g: 0.9098039, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
     - _MainColor: {r: 0.32941177, g: 0.59607846, b: 0.7529412, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tiling: {r: 0, g: 0, b: 0, a: 0}
+    - _Tilling: {r: 0.96, g: 0.79, b: 0, a: 0}
   m_BuildTextureStacks: []

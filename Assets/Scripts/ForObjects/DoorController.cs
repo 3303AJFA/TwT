@@ -83,7 +83,7 @@ public class DoorController : MonoBehaviour, IDataPersistence
         data.doorPositions.TryGetValue(id, out _savePosition);
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
         if (saveAfterDoor.isSaved && this != null)
         {

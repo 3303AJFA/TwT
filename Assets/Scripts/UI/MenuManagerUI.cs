@@ -5,6 +5,7 @@ public class MenuManagerUI : MonoBehaviour
 {
     public void ContinueGame()
     {
+        DataPersistenceManager.instance.SaveGame();
         SceneManager.LoadSceneAsync("Level_001");
         Time.timeScale = 1f;
         OpenMenuUI.GameIsPaused = false;
@@ -12,6 +13,7 @@ public class MenuManagerUI : MonoBehaviour
     
     public void QuitMainMenu()
     {
+        DataPersistenceManager.instance.SaveGame();
         SceneManager.LoadSceneAsync("_MainMenu");
         Time.timeScale = 1f;
         OpenMenuUI.GameIsPaused = false;
