@@ -69,9 +69,15 @@ public class LaserController : MonoBehaviour
                     //Debug.Log("PLAYER TOUCH LASER");
                 }
             }
+            else if (hit.collider.CompareTag("Interactive"))
+            {
+                CurrentColliderSize(hit.distance + 0.4f);
+                laserHitPlayer = false;
+                _lr.SetPosition(1, hit.point);
+            }
             else
             {
-                CurrentColliderSize(hit.distance + 0.5f);
+                CurrentColliderSize(hit.distance + 0.1f);
                 laserHitPlayer = false;
                 _lr.SetPosition(1, hit.point);
             }
@@ -89,7 +95,7 @@ public class LaserController : MonoBehaviour
     {
         if (_laserCollider is BoxCollider boxCollider)
         {
-            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize*2);
+            boxCollider.size = new Vector3(boxCollider.size.x, boxCollider.size.y, newSize);
             boxCollider.center = new Vector3(boxCollider.center.x, boxCollider.center.y, boxCollider.size.z / 2f);
         }
     }

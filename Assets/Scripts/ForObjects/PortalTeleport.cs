@@ -1,13 +1,23 @@
+using System;
 using UnityEngine;
 
 public class PortalTeleport : MonoBehaviour
 {
     public Transform player;
-    public Transform receiver;
+    public Transform otherPortal;
     public GameObject wall;
 
     private GameObject _cloneObject;
     private bool playerIsOverlapping = false;
+
+    private const int MaxClonesLaser = 1;
+    private int currentClones;
+    private Quaternion rotationOffset;
+
+    private void Start()
+    {
+        rotationOffset = Quaternion.Inverse(transform.rotation) * otherPortal.transform.rotation;
+    }
 
     private void Update()
     {
@@ -23,12 +33,12 @@ public class PortalTeleport : MonoBehaviour
 
             if (dotProduct < 0f)
             {
-                float rotationDiff = -Quaternion.Angle(transform.rotation, receiver.rotation);
+                float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.rotation);
                 rotationDiff += 180;
                 player.Rotate(Vector3.up, rotationDiff);
 
                 Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToPlayer;
-                player.position = receiver.position + positionOffset;
+                player.position = otherPortal.position + positionOffset;
 
                 playerIsOverlapping = false;
             }
@@ -71,7 +81,7 @@ public class PortalTeleport : MonoBehaviour
                 _cloneObject.transform.localScale = new Vector3(originalLocalScale.x / 2f, originalLocalScale.y / 2f, originalLocalScale.z / 2f);
 
                 // Установка новой позиции клонированного объекта относительно портала
-                _cloneObject.transform.position = receiver.position + directionToPortal * distance;
+                _cloneObject.transform.position = otherPortal.position + directionToPortal * distance;
 
                 _cloneObject.transform.rotation = other.transform.rotation;
             }
@@ -79,15 +89,26 @@ public class PortalTeleport : MonoBehaviour
         {
             LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
             LineRenderer mainLineRenderer = other.GetComponent<LineRenderer>();
+
+            // Начальная точка cloneLineRenderer
+            Vector3 hitPoint = mainLineRenderer.GetPosition(1);
+            hitPoint  = transform.InverseTransformPoint(hitPoint);
+            Vector3 clonePosition = otherPortal.transform.TransformPoint(rotationOffset * hitPoint); 
+            //cloneLineRenderer.SetPosition(0, new Vector3(clonePosition.x, mainLineRenderer.GetPosition(1).y, clonePosition.z));
             
-            // Применяем масштаб клонированного объекта
-            _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            /*// Направление mainLineRenderer в локальные координаты портала
+            Vector3 mainDirection = mainLineRenderer.GetPosition(1) - mainLineRenderer.GetPosition(0);
+            mainDirection = transform.InverseTransformDirection(mainDirection);
+            Vector3 cloneDirection = otherPortal.transform.TransformDirection(rotationOffset * mainDirection);
+            
+            // Конечная точка cloneLineRenderer
+            Vector3 cloneEndPosition = clonePosition + cloneDirection;
+            cloneLineRenderer.SetPosition(1, cloneEndPosition);*/
 
-            // Установка новой позиции клонированного объекта относительно портала
-            cloneLineRenderer.SetPosition(0, new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z + 0.1f));
-
-            _cloneObject.transform.position = cloneLineRenderer.GetPosition(0);
+            _cloneObject.transform.position = clonePosition;
             _cloneObject.transform.rotation = other.transform.rotation;
+            //Vector3 clonePosition = new Vector3(otherPortal.position.x, mainLineRenderer.GetPosition(1).y, otherPortal.position.z);
+            //cloneLineRenderer.SetPosition(1, clonePosition + direction);
         }
     }
 
@@ -104,9 +125,15 @@ public class PortalTeleport : MonoBehaviour
             playerIsOverlapping = false;
         }
 
-        if (other.CompareTag("Interactive") || other.CompareTag("Laser"))
+        if (other.CompareTag("Interactive"))
         {
             Destroy(_cloneObject);
+        }
+
+        if (other.CompareTag("Laser"))
+        {
+            Destroy(_cloneObject);
+            currentClones--;
         }
         
     }
@@ -116,20 +143,29 @@ public class PortalTeleport : MonoBehaviour
         if (originalCollider.CompareTag("Interactive"))
         {
             Quaternion originalRotation = originalCollider.transform.rotation;
-            Vector3 clonePosition = new Vector3(receiver.position.x, receiver.position.y, receiver.position.z);
+            Vector3 clonePosition = new Vector3(otherPortal.position.x, otherPortal.position.y, otherPortal.position.z);
 
             _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
 
             Collider colliderClone = _cloneObject.GetComponent<Collider>();
             colliderClone.enabled = false;
-        } else if (originalCollider.CompareTag("Laser"))
+        } 
+        else if (originalCollider.CompareTag("Laser") && currentClones < MaxClonesLaser)
         {
             LineRenderer mainLineRenderer = originalCollider.GetComponent<LineRenderer>();
             
-            Quaternion originalRotation = originalCollider.transform.rotation;
-            Vector3 clonePosition = new Vector3(mainLineRenderer.GetPosition(1).x, mainLineRenderer.GetPosition(1).y, receiver.position.z  + 0.1f);
-
-            _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
+            // Начальная точка cloneLineRenderer
+            Vector3 hitPoint = mainLineRenderer.GetPosition(1);
+            hitPoint  = transform.InverseTransformPoint(hitPoint);
+            Vector3 clonePosition = otherPortal.transform.TransformPoint(rotationOffset * hitPoint);
+            
+            _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, Quaternion.identity);
+            
+            LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
+            //cloneLineRenderer.SetPosition(0, new Vector3(clonePosition.x, mainLineRenderer.GetPosition(1).y, clonePosition.z));
+            
+            currentClones++;
+            //cloneLineRenderer.SetPosition(1, clonePosition + newDirection);
         }
     }
 }
