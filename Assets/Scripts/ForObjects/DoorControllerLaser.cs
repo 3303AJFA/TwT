@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DoorControllerLaser : MonoBehaviour
 {
-public SaveAfterDoor saveAfterDoor;
+    public SaveAfterDoor saveAfterDoor;
     [SerializeField] private string id;
+    private Animator animator;
 
     [ContextMenu("Generate guid for id")]
     private void GenerateGuid()
@@ -19,12 +21,16 @@ public SaveAfterDoor saveAfterDoor;
     private float _openDoorY = 2f;
     private bool isDoorStop;
     private bool uploaded = false;
+    private bool _doorOpened;
+
+    [SerializeField] private UnityEvent openDoor;
     
 
     void Start()
     {
         _originalPosition = transform.position;
         _openDoorStep = _originalPosition.y + _openDoorY;
+        animator = GameObject.FindGameObjectWithTag("FoundSolutionPanel").GetComponent<Animator>();
     }
     
     // Update is called once per frame
@@ -41,6 +47,12 @@ public SaveAfterDoor saveAfterDoor;
             transform.Translate(Vector3.forward * _maximumDoorTranslate * Time.deltaTime); 
             //Debug.Log(transform.position + " " + _originalPosition + " " + _openDoorStep);
             isDoorStop = false;
+            
+            if (!_doorOpened)
+            {
+                openDoor.Invoke();
+                _doorOpened = true;
+            }
         }
         else if ((!laserReciever.door && transform.position.y > _originalPosition.y) && !isDoorStop && !uploaded)
         {
@@ -71,9 +83,9 @@ public SaveAfterDoor saveAfterDoor;
         data.doorPositions.TryGetValue(id, out _savePosition);
     }
 
-    public void SaveData(ref GameData data)
+    public void SaveData(GameData data)
     {
-        if (saveAfterDoor.isSaved)
+        if (saveAfterDoor.isSaved && this != null)
         {
             if (data.doorPositions.ContainsKey(id))
             {

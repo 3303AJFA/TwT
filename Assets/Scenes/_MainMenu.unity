@@ -5158,7 +5158,7 @@ MonoBehaviour:
       - m_Target: {fileID: 2134395514}
         m_TargetAssemblyTypeName: SettingsMenuUI, Assembly-CSharp
         m_MethodName: SetFullscreen
-        m_Mode: 6
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5700,6 +5700,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 4b4f1edf98d5b784e9218de29fda1e6e, type: 2}
+  fullscreenToggle: {fileID: 1796974436}
+  qualityDropdown: {fileID: 1142102645}
 --- !u!1 &2142119540
 GameObject:
   m_ObjectHideFlags: 0
@@ -5862,6 +5864,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3567971760377431221, guid: 3491703aa4d87c94e8061b026642dea6,
+        type: 3}
+      propertyPath: initializeDataIfNull
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3742338277465174358, guid: 3491703aa4d87c94e8061b026642dea6,
         type: 3}
       propertyPath: m_LocalPosition.x

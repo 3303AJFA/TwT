@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,6 +8,10 @@ public class GameData
     public SerializableDictionary<string, bool> checkPoints;
     public SerializableDictionary<string, bool> isLoaded;
     public SerializableDictionary<string, bool> isExited;
+
+    public float volumeSettings;
+    public int qualityIndex;
+    public bool isFullScreen;
     
     public GameData()
     {
@@ -17,5 +20,10 @@ public class GameData
         checkPoints = new SerializableDictionary<string, bool>();
         isLoaded = new SerializableDictionary<string, bool>();
         isExited = new SerializableDictionary<string, bool>();
+
+        volumeSettings = 50;
+        qualityIndex = 1;
+        isFullScreen = true;
+        
     }
 }

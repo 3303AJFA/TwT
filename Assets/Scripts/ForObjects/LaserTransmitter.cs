@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class LaserTransmitter : MonoBehaviour
@@ -8,7 +9,7 @@ public class LaserTransmitter : MonoBehaviour
     
     private GameObject _cloneObject;
     private bool _isTransmit;
-    
+
     void FixedUpdate()
     {
         if (_laserController != null) 
@@ -18,7 +19,7 @@ public class LaserTransmitter : MonoBehaviour
                 LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
 
                 // Применяем масштаб клонированного объекта
-                _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                //_cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
                 // Установка новой позиции клонированного объекта относительно портала
                 cloneLineRenderer.SetPosition(0, new Vector3(point.position.x, point.position.y, point.position.z));
@@ -36,7 +37,7 @@ public class LaserTransmitter : MonoBehaviour
             if (_laserController == null) _laserController = other.collider.GetComponent<LaserController>();
             
             if (!_laserController.laserHitPlayer) CloneObject(other);
-
+            
             _isTransmit = true;
         }
     }
@@ -48,7 +49,7 @@ public class LaserTransmitter : MonoBehaviour
             LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
 
             // Применяем масштаб клонированного объекта
-            _cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            //_cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             // Установка новой позиции клонированного объекта относительно портала
             cloneLineRenderer.SetPosition(0, new Vector3(point.position.x, point.position.y, point.position.z));
