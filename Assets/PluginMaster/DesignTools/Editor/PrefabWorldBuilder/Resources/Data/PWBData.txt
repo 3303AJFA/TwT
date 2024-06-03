@@ -461,7 +461,8 @@
                     "Laser",
                     "Portal",
                     "Barrier",
-                    "FoundSolutionPanel"
+                    "FoundSolutionPanel",
+                    "Audio"
                 ],
                 "_slopeFilter": {
                     "_v1": 0.0,
@@ -635,7 +636,8 @@
                 "Laser",
                 "Portal",
                 "Barrier",
-                "FoundSolutionPanel"
+                "FoundSolutionPanel",
+                "Audio"
             ],
             "_slopeFilter": {
                 "_v1": 0.0,
@@ -2143,7 +2145,8 @@
                     "Laser",
                     "Portal",
                     "Barrier",
-                    "FoundSolutionPanel"
+                    "FoundSolutionPanel",
+                    "Audio"
                 ]
             }
         ],
@@ -2180,7 +2183,8 @@
                 "Laser",
                 "Portal",
                 "Barrier",
-                "FoundSolutionPanel"
+                "FoundSolutionPanel",
+                "Audio"
             ]
         }
     },

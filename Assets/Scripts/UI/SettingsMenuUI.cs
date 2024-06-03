@@ -1,58 +1,41 @@
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.UIElements;
 using TMPro;
+using UnityEngine.UI;
 
 public class SettingsMenuUI : MonoBehaviour
 {
     public AudioSource musicSource;
 
-    public GameObject fullscreenToggle;
-    public TMP_Dropdown qualityDropdown;
-    public Slider volumeSlider;
+    [SerializeField] private Toggle fullScreenToggle;
+    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private TMP_Dropdown qualityDropdown;
 
-    private float _volumeSettings;
-    private int _qualitySettings;
-    private bool _isFullScreenSettings;
+    private void Awake()
+    {
+        musicSource.volume = PlayerPrefs.GetFloat("volume");
+        QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("quality"));
+        Screen.fullScreen = PlayerPrefs.GetInt("fullScreen") == 1;
+
+        volumeSlider.value = PlayerPrefs.GetFloat("volume");
+        qualityDropdown.value = PlayerPrefs.GetInt("quality");
+        fullScreenToggle.isOn = PlayerPrefs.GetInt("fullScreen") == 1;
+    }
 
     public void SetVolume(float volume)
     {
-        _volumeSettings = volume;
-        musicSource.volume = _volumeSettings;
+        musicSource.volume = volume;
+        PlayerPrefs.SetFloat("volume", volume);
     }
 
     public void SetQuality(int qualityIndex)
     {
-        _qualitySettings = qualityIndex;
         QualitySettings.SetQualityLevel(qualityIndex);
+        PlayerPrefs.SetInt("quality", qualityIndex);
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
-        _isFullScreenSettings = isFullscreen;
         Screen.fullScreen = isFullscreen;
-    }
-
-    public void SaveSettings()
-    {
-        DataPreferenceManager.instance.SaveGame();
-    }
-
-    public void LoadData(PreferenceData data)
-    {
-        _volumeSettings = data.volumeSettings;
-        _qualitySettings = data.qualityIndex;
-        _isFullScreenSettings = data.isFullScreen;
-        
-        /*musicSource.volume = data.volumeSettings;
-        QualitySettings.SetQualityLevel(data.qualityIndex);
-        Screen.fullScreen = data.isFullScreen;*/
-    }
-
-    public void SaveData(PreferenceData data)
-    {
-        data.volumeSettings = musicSource.volume;
-        data.qualityIndex = _qualitySettings;
-        data.isFullScreen = _isFullScreenSettings;
+        PlayerPrefs.SetInt("fullScreen", isFullscreen ? 1 : 0);
     }
 }

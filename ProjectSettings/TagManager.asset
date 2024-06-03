@@ -12,6 +12,7 @@ TagManager:
   - Portal
   - Barrier
   - FoundSolutionPanel
+  - Audio
   layers:
   - Default
   - TransparentFX
