@@ -59,6 +59,7 @@ public class DataPersistenceManager : MonoBehaviour
         if (this.gameData == null)
         {
             Debug.LogWarning("No data was found. A New Game needs to be started before data van saved.");
+            NewGame();
             return;
         }
         

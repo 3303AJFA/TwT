@@ -5,7 +5,7 @@ using TMPro;
 
 public class SettingsMenuUI : MonoBehaviour
 {
-    public AudioMixer audioMixer;
+    public AudioSource musicSource;
 
     public GameObject fullscreenToggle;
     public TMP_Dropdown qualityDropdown;
@@ -15,50 +15,43 @@ public class SettingsMenuUI : MonoBehaviour
     private int _qualitySettings;
     private bool _isFullScreenSettings;
 
-    private void Awake()
-    {
-        //Screen.fullScreen = false;
-        
-        /*fullscreenToggle.toggle = _isFullScreenSettings;
-        volumeSlider.value = _volumeSettings;
-        qualityDropdown.value = _qualitySettings;*/
-    }
-
     public void SetVolume(float volume)
     {
         _volumeSettings = volume;
-        audioMixer.SetFloat("Volume", volume);
-        DataPersistenceManager.instance.SaveGame();
+        musicSource.volume = _volumeSettings;
     }
 
     public void SetQuality(int qualityIndex)
     {
         _qualitySettings = qualityIndex;
         QualitySettings.SetQualityLevel(qualityIndex);
-        DataPersistenceManager.instance.SaveGame();
     }
 
     public void SetFullscreen(bool isFullscreen)
     {
         _isFullScreenSettings = isFullscreen;
         Screen.fullScreen = isFullscreen;
-        DataPersistenceManager.instance.SaveGame();
     }
 
-    public void LoadData(GameData data)
+    public void SaveSettings()
+    {
+        DataPreferenceManager.instance.SaveGame();
+    }
+
+    public void LoadData(PreferenceData data)
     {
         _volumeSettings = data.volumeSettings;
         _qualitySettings = data.qualityIndex;
         _isFullScreenSettings = data.isFullScreen;
         
-        audioMixer.SetFloat("Volume", data.volumeSettings);
+        /*musicSource.volume = data.volumeSettings;
         QualitySettings.SetQualityLevel(data.qualityIndex);
-        Screen.fullScreen = data.isFullScreen;
+        Screen.fullScreen = data.isFullScreen;*/
     }
 
-    public void SaveData(GameData data)
+    public void SaveData(PreferenceData data)
     {
-        data.volumeSettings = _volumeSettings;
+        data.volumeSettings = musicSource.volume;
         data.qualityIndex = _qualitySettings;
         data.isFullScreen = _isFullScreenSettings;
     }

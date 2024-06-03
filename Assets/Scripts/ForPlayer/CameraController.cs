@@ -21,7 +21,9 @@ public class CameraController : MonoBehaviour
 
     private void RotateCamera(float rotationInput)
     {
-        transform.RotateAround(target.transform.position, Vector3.up, rotationInput * keyboardRotationAmount * Time.fixedDeltaTime);
+        transform.RotateAround(target.transform.position, 
+                                Vector3.up, 
+                                rotationInput * keyboardRotationAmount * Time.fixedDeltaTime);
     }
     
     private void HandleMovementInput()

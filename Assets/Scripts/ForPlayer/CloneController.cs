@@ -22,9 +22,6 @@ public class CloneController : MonoBehaviour
             Vector3 viewportPosition = Camera.main.ScreenToViewportPoint(_mousePosition);
             
             Ray ray = Camera.main.ViewportPointToRay(viewportPosition);
-            
-            //layerMask = ~(1 << LayerMask.NameToLayer("Roof"));
-            
             RaycastHit hit;
             
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))

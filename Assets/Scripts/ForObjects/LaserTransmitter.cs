@@ -18,9 +18,6 @@ public class LaserTransmitter : MonoBehaviour
             {
                 LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
 
-                // Применяем масштаб клонированного объекта
-                //_cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-
                 // Установка новой позиции клонированного объекта относительно портала
                 cloneLineRenderer.SetPosition(0, new Vector3(point.position.x, point.position.y, point.position.z));
 
@@ -48,9 +45,6 @@ public class LaserTransmitter : MonoBehaviour
         {
             LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
 
-            // Применяем масштаб клонированного объекта
-            //_cloneObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-
             // Установка новой позиции клонированного объекта относительно портала
             cloneLineRenderer.SetPosition(0, new Vector3(point.position.x, point.position.y, point.position.z));
 
@@ -59,6 +53,14 @@ public class LaserTransmitter : MonoBehaviour
             
             _isTransmit = true;
         }
+    }
+    
+    private void CloneObject(Collision originalCollider)
+    {
+        Quaternion originalRotation = originalCollider.transform.rotation;
+        Vector3 clonePosition = new Vector3(point.position.x, point.position.y, point.position.z);
+
+        _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
     }
 
     private void OnCollisionExit(Collision other)
@@ -73,12 +75,6 @@ public class LaserTransmitter : MonoBehaviour
         }
     }
 
-    private void CloneObject(Collision originalCollider)
-    {
-        Quaternion originalRotation = originalCollider.transform.rotation;
-        Vector3 clonePosition = new Vector3(point.position.x, point.position.y, point.position.z);
-
-        _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, originalRotation);
-    }
+    
     
 }
