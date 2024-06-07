@@ -10,6 +10,7 @@ public class DataPersistenceManager : MonoBehaviour
     
     [Header("File Storage Config")] 
     [SerializeField] private string fileName;
+    [SerializeField] private bool useEncryption;
 
     private GameData gameData;
 
@@ -30,51 +31,41 @@ public class DataPersistenceManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this.gameObject);
         
-        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, useEncryption);
     }
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
     
+    private void OnDisable() 
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadGame();
     }
     
-    private void OnDisable()
+    public void OnSceneUnloaded(Scene scene)
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SaveGame();
     }
-
+    
     public void NewGame()
     {
         this.gameData = new GameData();
     }
 
-    public void SaveGame()
-    {
-        if (this.gameData == null)
-        {
-            Debug.LogWarning("No data was found. A New Game needs to be started before data van saved.");
-            NewGame();
-            return;
-        }
-        
-        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
-        {
-            dataPersistenceObj.SaveData(gameData);
-        }
-        
-        dataHandler.Save(gameData);
-    }
-
     public void LoadGame()
     {
         this.gameData = dataHandler.Load();
-
+        
         if (this.gameData == null && initializeDataIfNull)
         {
             NewGame();
@@ -91,11 +82,24 @@ public class DataPersistenceManager : MonoBehaviour
             dataPersistenceObj.LoadData(gameData);
         }
     }
-
-    private void OnApplicationQuit()
+    
+    public void SaveGame()
     {
-        SaveGame();
+        if (this.gameData == null)
+        {
+            Debug.Log("No data was found. A New Game needs to be started before data can be saved.");
+            return;
+        }
+        
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
+        {
+            dataPersistenceObj.SaveData(gameData);
+        }
+        
+        dataHandler.Save(gameData);
     }
+
+    private void OnApplicationQuit() => SaveGame();
 
     private List<IDataPersistence> FindAllDataPersistenceObjects()
     {
@@ -104,8 +108,5 @@ public class DataPersistenceManager : MonoBehaviour
         return new List<IDataPersistence>(dataPersistenceObjects);
     }
 
-    public bool HasGameData()
-    {
-        return gameData != null;
-    } 
+    public bool HasGameData() => gameData != null;
 }
