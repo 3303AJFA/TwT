@@ -51,7 +51,7 @@ public class ActionController : MonoBehaviour
 
     public void GrabAndDropAction(InputAction.CallbackContext context)
     {
-        if (context.performed && !OpenMenuUI.GameIsPaused)
+        if (context.performed && !PauseGame.GameIsPaused)
         {
             if (heldObject == null)
             {
@@ -70,11 +70,11 @@ public class ActionController : MonoBehaviour
 
     public void PushAction(InputAction.CallbackContext context)
     {
-        if (context.performed && (heldObject != null && !_isCharging) && !OpenMenuUI.GameIsPaused)
+        if (context.performed && (heldObject != null && !_isCharging) && !PauseGame.GameIsPaused)
         {
             StartCharging();
         }
-        else if (context.canceled && _isCharging && !OpenMenuUI.GameIsPaused)
+        else if (context.canceled && _isCharging && !PauseGame.GameIsPaused)
         {
             StopCharging();
         }

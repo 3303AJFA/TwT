@@ -42,6 +42,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "InteractAction",
+                    "type": "Button",
+                    "id": "2c898ff1-4043-4ca5-a39a-8c4d1cd127fb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "PushAction",
                     "type": "Button",
                     "id": "aea8fe65-dbe5-468b-8565-4089625ac7c4",
@@ -72,24 +81,6 @@
                     "name": "Escape",
                     "type": "Button",
                     "id": "91aa198c-f6e2-46ae-9dca-810235ec4c9d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "1",
-                    "type": "Button",
-                    "id": "1d884501-a67b-49cd-9913-0addb400528a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "2",
-                    "type": "Button",
-                    "id": "bd02a425-e68e-4416-9d44-b89dccb6f260",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -253,23 +244,12 @@
                 },
                 {
                     "name": "",
-                    "id": "6ab1e6f9-344a-40e6-82c0-9e542e979549",
-                    "path": "<Keyboard>/1",
+                    "id": "aaa8ca74-e18d-45cc-a055-b33588e1346c",
+                    "path": "<Keyboard>/t",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "22879ce9-5f56-47e8-97a1-4afe149631fd",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "2",
+                    "action": "InteractAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

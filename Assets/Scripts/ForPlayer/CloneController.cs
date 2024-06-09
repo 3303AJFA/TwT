@@ -15,7 +15,7 @@ public class CloneController : MonoBehaviour
 
     public void OnLeftMouseButton(InputAction.CallbackContext context)
     {
-        if (context.performed && _clone == null && !OpenMenuUI.GameIsPaused)
+        if (context.performed && _clone == null && !PauseGame.GameIsPaused)
         {
             _mousePosition = Input.mousePosition;
             
@@ -39,7 +39,7 @@ public class CloneController : MonoBehaviour
     
     public void OnRightMouseButton(InputAction.CallbackContext context)
     {
-        if (context.performed && _clone != null && !OpenMenuUI.GameIsPaused)
+        if (context.performed && _clone != null && !PauseGame.GameIsPaused)
         {
             Destroy(_clone);
             isClone = false;
