@@ -2,12 +2,17 @@ using System.Collections.Generic;
 using Ink.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SearchService;
 
 public class DialogueManager : MonoBehaviour
 {
     [Header("Dialogue UI")] 
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private TextMeshProUGUI displayNameText;
+    [SerializeField] private Animator portraitAnimator;
+    private Animator _layoutAnimator;
 
     [Header("Choices UI")] 
     [SerializeField] private GameObject[] choices;
@@ -17,6 +22,10 @@ public class DialogueManager : MonoBehaviour
     public bool dialogueIsPlaying { get; private set; }
 
     private static DialogueManager _instance;
+
+    private const string SPEAKER_TAG = "speaker";
+    private const string PORTRAIT_TAG = "portrait";
+    private const string LAYOUT_TAG = "layout";
 
     private void Awake()
     {
@@ -37,6 +46,8 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
+
+        _layoutAnimator = dialoguePanel.GetComponent<Animator>();
         
         // получаем все выборы из текста
         _choicesText = new TextMeshProUGUI[choices.Length];
@@ -67,6 +78,10 @@ public class DialogueManager : MonoBehaviour
         dialogueIsPlaying = true;
         PauseGame.GetInstance().Pause(dialoguePanel);
 
+        displayNameText.text = "???";
+        portraitAnimator.Play("default");
+        _layoutAnimator.Play("right");
+
         ContinueStory();
     }
 
@@ -84,6 +99,8 @@ public class DialogueManager : MonoBehaviour
             dialogueText.text = _currentStory.Continue();
             
             DisplayChoices();
+
+            HandleTags(_currentStory.currentTags);
         }
         else
         {
@@ -91,6 +108,37 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void HandleTags(List<string> currentTags)
+    {
+        foreach (string tag in currentTags)
+        {
+            string[] splitTag = tag.Split(':');
+            if (splitTag.Length != 2)
+            {
+                Debug.LogError("Tag could not be appropriately parsed: " + tag);
+            }
+
+            string tagKey = splitTag[0].Trim();
+            string tagValue = splitTag[1].Trim();
+
+            switch (tagKey)
+            {
+                case SPEAKER_TAG:
+                    displayNameText.text = tagValue;
+                    break;
+                case PORTRAIT_TAG:
+                    portraitAnimator.Play(tagValue);
+                    break;
+                case LAYOUT_TAG:
+                    _layoutAnimator.Play(tagValue);
+                    break;
+                default:
+                    Debug.LogWarning("Tag came in but is not currently being handled: " + tag);
+                    break;
+            }
+        }
+    }
+    
     private void DisplayChoices()
     {
         List<Choice> currentChoices = _currentStory.currentChoices;

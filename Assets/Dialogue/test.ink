@@ -1,2 +1,10 @@
-This is a test!
-Here's another line!
+Ой-ой...Вижу ты очнулся #speaker:??? #portrait:fairy #layout:left
+Где... где я? Что здесь происходит? #speaker:??? #portrait:default #layout:right
+Еще один подопытный... Ты в башне, милый. В башне, полной головоломок и испытаний. #speaker:??? #portrait:fairy #layout:left
+Башня? Головоломки? Я ничего не понимаю... Кто ты? #speaker:??? #portrait:default #layout:right
+Я – фея, хотя сейчас больше похожа на пленницу. Этот... кхм... умник заточил меня здесь. Сказал, что я ключ к его эксперименту.#speaker:фея #portrait:fairy #layout:left
+Эксперимент? Какой еще эксперимент? #speaker:??? #portrait:default #layout:right
+Он испытывает людей. Заставляет их проходить через эти головоломки... Изучает их сознание, их способности... Те, кто не справляются... исчезают.#speaker:фея #portrait:fairy #layout:left
+Исчезают? Что ты имеешь в виду? #speaker:??? #portrait:default #layout:right
+Не важно... Тебе лучше сосредоточиться на своем выживании. Найди выход из этой башни, если сможешь. Хотя... сомневаюсь, что кто-то способен на это. Для начала, ты можешь попробовать взять мою клетку и поставить в тот механизм.#speaker:фея #portrait:fairy #layout:left
+Давай попробуем... #speaker:??? #portrait:default #layout:right
