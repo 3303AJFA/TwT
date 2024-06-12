@@ -6,6 +6,7 @@ public class InputManager : MonoBehaviour
     private static InputManager instance;
     
     private bool interactPressed = false;
+    private bool submitPressed = false;
     
     private void Awake()
     {
@@ -33,10 +34,34 @@ public class InputManager : MonoBehaviour
         } 
     }
     
+    public void SubmitPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            submitPressed = true;
+        }
+        else if (context.canceled)
+        {
+            submitPressed = false;
+        } 
+    }
+    
     public bool GetInteractPressed() 
     {
         bool result = interactPressed;
         interactPressed = false;
         return result;
+    }
+    
+    public bool GetSubmitPressed() 
+    {
+        bool result = submitPressed;
+        submitPressed = false;
+        return result;
+    }
+
+    public void RegisterSubmitPressed() 
+    {
+        submitPressed = false;
     }
 }

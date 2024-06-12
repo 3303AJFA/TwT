@@ -51,6 +51,11 @@ public class ActionController : MonoBehaviour
 
     public void GrabAndDropAction(InputAction.CallbackContext context)
     {
+        if (DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            return;
+        }
+        
         if (context.performed && !PauseGame.GameIsPaused)
         {
             if (heldObject == null)
@@ -70,6 +75,11 @@ public class ActionController : MonoBehaviour
 
     public void PushAction(InputAction.CallbackContext context)
     {
+        if (DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            return;
+        }
+        
         if (context.performed && (heldObject != null && !_isCharging) && !PauseGame.GameIsPaused)
         {
             StartCharging();

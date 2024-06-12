@@ -51,6 +51,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "SubmitAction",
+                    "type": "Button",
+                    "id": "c673e53e-432f-4b21-b09d-0cbc0b5a7296",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "PushAction",
                     "type": "Button",
                     "id": "aea8fe65-dbe5-468b-8565-4089625ac7c4",
@@ -250,6 +259,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "InteractAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "85bb3415-2371-4e1d-9070-30009baca62b",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SubmitAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

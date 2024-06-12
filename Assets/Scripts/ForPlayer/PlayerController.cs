@@ -43,6 +43,11 @@ public class PlayerController : MonoBehaviour
     
     private void FixedUpdate()
     {
+        if (DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            return;
+        }
+        
         //Debug.DrawRay(Camera.main.transform.position, cameraForward*500f, Color.red, 0.0f, true);
         _cameraRight = _mainCamera.transform.right;
         _cameraRight.y = 0;
