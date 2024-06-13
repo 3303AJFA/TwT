@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -22,7 +23,23 @@ public class ActionController : MonoBehaviour
     
     [HideInInspector]
     public GameObject heldObject;
+
+    private static ActionController Instance;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogWarning("Found more than one Dialogue Manager in the scene");
+        }
+
+        Instance = this;
+    }
     
+    public static ActionController GetInstance()
+    {
+        return Instance;
+    }
 
     private void Start()
     {

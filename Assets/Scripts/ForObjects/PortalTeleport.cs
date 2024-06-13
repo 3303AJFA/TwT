@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PortalTeleport : MonoBehaviour
@@ -7,8 +6,10 @@ public class PortalTeleport : MonoBehaviour
     public Transform otherPortal;
     public GameObject wall;
 
+    private GameObject _teleportedObject;
     private GameObject _cloneObject;
     private bool playerIsOverlapping = false;
+    private bool objectIsOverlapping = false;
 
     private const int MaxClonesLaser = 1;
     private int currentClones;
@@ -21,10 +22,10 @@ public class PortalTeleport : MonoBehaviour
 
     private void Update()
     {
-        PlayerTeleport();
+        Teleport();
     }
 
-    private void PlayerTeleport()
+    private void Teleport()
     {
         if (playerIsOverlapping)
         {
@@ -43,6 +44,24 @@ public class PortalTeleport : MonoBehaviour
                 playerIsOverlapping = false;
             }
         }
+
+        if (objectIsOverlapping)
+        {
+            Vector3 portalToObject = _teleportedObject.transform.position - transform.position;
+            float dotProduct = Vector3.Dot(transform.up, portalToObject);
+
+            if (dotProduct < 0f)
+            {
+                float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.rotation);
+                rotationDiff += 180;
+                _teleportedObject.transform.Rotate(Vector3.up, rotationDiff);
+
+                Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToObject;
+                _teleportedObject.transform.position = otherPortal.position + positionOffset;
+
+                objectIsOverlapping = false;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,7 +77,22 @@ public class PortalTeleport : MonoBehaviour
             playerIsOverlapping = true;
         }
         
-        if (other.CompareTag("Interactive") || other.CompareTag("Laser"))
+        if (other.CompareTag("Interactive"))
+        {
+            if (ActionController.GetInstance().heldObject != null)
+            {
+                CloneObject(other);
+            }
+            else
+            {
+                objectIsOverlapping = true;
+                
+                _teleportedObject = other.gameObject;
+            }
+
+        }
+        
+        if (other.CompareTag("Laser"))
         {
             CloneObject(other);
         }
@@ -78,8 +112,15 @@ public class PortalTeleport : MonoBehaviour
             if (_cloneObject != null)
             {
                 var originalLocalScale = other.transform.localScale;
-                _cloneObject.transform.localScale = new Vector3(originalLocalScale.x / 2f, originalLocalScale.y / 2f, originalLocalScale.z / 2f);
-
+                if (ActionController.GetInstance().heldObject != null)
+                {
+                    _cloneObject.transform.localScale = new Vector3(originalLocalScale.x / 2f, originalLocalScale.y / 2f, originalLocalScale.z / 2f);
+                }
+                else
+                {
+                    _cloneObject.transform.localScale = originalLocalScale;
+                }
+                
                 // Установка новой позиции клонированного объекта относительно портала
                 _cloneObject.transform.position = otherPortal.position + directionToPortal * distance;
 
@@ -87,28 +128,15 @@ public class PortalTeleport : MonoBehaviour
             }
         }else if (other.CompareTag("Laser"))
         {
-            LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
             LineRenderer mainLineRenderer = other.GetComponent<LineRenderer>();
 
             // Начальная точка cloneLineRenderer
             Vector3 hitPoint = mainLineRenderer.GetPosition(1);
             hitPoint  = transform.InverseTransformPoint(hitPoint);
             Vector3 clonePosition = otherPortal.transform.TransformPoint(rotationOffset * hitPoint); 
-            //cloneLineRenderer.SetPosition(0, new Vector3(clonePosition.x, mainLineRenderer.GetPosition(1).y, clonePosition.z));
-            
-            /*// Направление mainLineRenderer в локальные координаты портала
-            Vector3 mainDirection = mainLineRenderer.GetPosition(1) - mainLineRenderer.GetPosition(0);
-            mainDirection = transform.InverseTransformDirection(mainDirection);
-            Vector3 cloneDirection = otherPortal.transform.TransformDirection(rotationOffset * mainDirection);
-            
-            // Конечная точка cloneLineRenderer
-            Vector3 cloneEndPosition = clonePosition + cloneDirection;
-            cloneLineRenderer.SetPosition(1, cloneEndPosition);*/
 
             _cloneObject.transform.position = clonePosition;
             _cloneObject.transform.rotation = other.transform.rotation;
-            //Vector3 clonePosition = new Vector3(otherPortal.position.x, mainLineRenderer.GetPosition(1).y, otherPortal.position.z);
-            //cloneLineRenderer.SetPosition(1, clonePosition + direction);
         }
     }
 
@@ -127,7 +155,18 @@ public class PortalTeleport : MonoBehaviour
 
         if (other.CompareTag("Interactive"))
         {
-            Destroy(_cloneObject);
+            if (ActionController.GetInstance().heldObject != null)
+            {
+                Destroy(_cloneObject);
+            }
+            else
+            {
+                Destroy(_cloneObject);
+                
+                objectIsOverlapping = false;
+                
+                _teleportedObject = null;
+            }
         }
 
         if (other.CompareTag("Laser"))
@@ -161,11 +200,7 @@ public class PortalTeleport : MonoBehaviour
             
             _cloneObject = Instantiate(originalCollider.gameObject, clonePosition, Quaternion.identity);
             
-            LineRenderer cloneLineRenderer = _cloneObject.GetComponent<LineRenderer>();
-            //cloneLineRenderer.SetPosition(0, new Vector3(clonePosition.x, mainLineRenderer.GetPosition(1).y, clonePosition.z));
-            
             currentClones++;
-            //cloneLineRenderer.SetPosition(1, clonePosition + newDirection);
         }
     }
 }

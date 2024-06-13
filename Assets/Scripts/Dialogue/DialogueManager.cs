@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Ink.Runtime;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class DialogueManager : MonoBehaviour
 
     private Story _currentStory;
     public bool dialogueIsPlaying { get; private set; }
+    public bool dialogueIsEnding { get; private set; }
 
     private bool canContinueToNextLine = false;
 
@@ -42,6 +44,7 @@ public class DialogueManager : MonoBehaviour
     private const string PORTRAIT_TAG = "portrait";
     private const string LAYOUT_TAG = "layout";
     private const string AUDIO_TAG = "audio";
+    private const string ENDING_TAG = "ending";
 
     private void Awake()
     {
@@ -287,6 +290,9 @@ public class DialogueManager : MonoBehaviour
                     break;
                 case AUDIO_TAG:
                     SetCurrentAudioInfo(tagValue);
+                    break;
+                case ENDING_TAG:
+                    dialogueIsEnding = bool.Parse(tagValue);
                     break;
                 default:
                     Debug.LogWarning("Tag came in but is not currently being handled: " + tag);

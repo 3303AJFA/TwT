@@ -7,4 +7,4 @@
 Он испытывает людей. Заставляет их проходить через эти головоломки... Изучает их сознание, их способности... Те, кто не справляются... исчезают.#speaker:фея #portrait:fairy #layout:left #audio:fairy
 Исчезают? Что ты имеешь в виду? #speaker:??? #portrait:default #layout:right #audio:player
 Не важно... Тебе лучше сосредоточиться на своем выживании. Найди выход из этой башни, если сможешь. Хотя... сомневаюсь, что кто-то способен на это. Для начала, ты можешь попробовать взять мою клетку и поставить в тот <color=\#EC3B00>механизм</color>.#speaker:фея #portrait:fairy #layout:left #audio:fairy
-Давай попробуем... #speaker:??? #portrait:default #layout:right #audio:player
+Давай попробуем... #speaker:??? #portrait:default #layout:right #audio:player #ending:true
