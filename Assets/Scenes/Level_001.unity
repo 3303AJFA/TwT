@@ -8214,9 +8214,19 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 4035246053245320605, guid: 9b11a088dd44e544aa037cae123743fa,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 5547865681458094018, guid: 9b11a088dd44e544aa037cae123743fa,
         type: 3}
       propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6034193199455879669, guid: 9b11a088dd44e544aa037cae123743fa,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8977611576398691931, guid: 9b11a088dd44e544aa037cae123743fa,
@@ -55547,6 +55557,11 @@ PrefabInstance:
       propertyPath: thisPortalPlane
       value: 
       objectReference: {fileID: 1071908118}
+    - target: {fileID: 8598839055107941996, guid: d11e1e15beb1647469935d0a3d5b2cb2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -87408,7 +87423,7 @@ PrefabInstance:
     - target: {fileID: 547008813696871827, guid: cad50b87725f7354889d2301c07b1426,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.156
+      value: 1.006
       objectReference: {fileID: 0}
     - target: {fileID: 547008813696871827, guid: cad50b87725f7354889d2301c07b1426,
         type: 3}
@@ -87454,26 +87469,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LaserReciever
-      objectReference: {fileID: 0}
-    - target: {fileID: 3108732142404370651, guid: cad50b87725f7354889d2301c07b1426,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 0.009019047
-      objectReference: {fileID: 0}
-    - target: {fileID: 3108732142404370651, guid: cad50b87725f7354889d2301c07b1426,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 0.008997001
-      objectReference: {fileID: 0}
-    - target: {fileID: 3108732142404370651, guid: cad50b87725f7354889d2301c07b1426,
-        type: 3}
-      propertyPath: m_Center.x
-      value: 0.00011633932
-      objectReference: {fileID: 0}
-    - target: {fileID: 3108732142404370651, guid: cad50b87725f7354889d2301c07b1426,
-        type: 3}
-      propertyPath: m_Center.z
-      value: 0.00030444504
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -94274,36 +94269,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1509237838}
     m_Modifications:
-    - target: {fileID: 3438958945780140917, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: materials.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3438958945780140917, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 235c9c8f3c18d8a4da45c2f144342218, type: 2}
-    - target: {fileID: 3438958945780140917, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: materials.Array.data[1]
-      value: 
-      objectReference: {fileID: 2100000, guid: 5947f2abc29d2894ebb56d72b76f787e, type: 2}
-    - target: {fileID: 3996791186540629460, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 3996791186540629460, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 3996791186540629460, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 40
-      objectReference: {fileID: 0}
     - target: {fileID: 3996791186540629460, guid: 6572d94352ba08a4a8fa10dd17e6c829,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -94358,16 +94323,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Transmitter
-      objectReference: {fileID: 0}
-    - target: {fileID: 4861073556417941027, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: m_TagString
-      value: Interactive
-      objectReference: {fileID: 0}
-    - target: {fileID: 9201097751188312800, guid: 6572d94352ba08a4a8fa10dd17e6c829,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 112
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

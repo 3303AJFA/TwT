@@ -32,6 +32,37 @@ Transform:
   - {fileID: 4644730983122344273}
   m_Father: {fileID: 4432558222537426126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1706833785501885192
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2143198337891370712}
+  m_Layer: 11
+  m_Name: PortalPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2143198337891370712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706833785501885192}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1050609382677850798}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2224751124302822965
 GameObject:
   m_ObjectHideFlags: 0
@@ -66,6 +97,7 @@ Transform:
   - {fileID: 2930980107075029347}
   - {fileID: 7292486027210751633}
   - {fileID: 3317910052135623185}
+  - {fileID: 5140645406139132350}
   m_Father: {fileID: 4636616737917676188}
   m_LocalEulerAnglesHint: {x: -90, y: 180, z: 0}
 --- !u!114 &2094306899370964294
@@ -364,8 +396,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  receiver: {fileID: 3317910052135623185}
+  otherPortal: {fileID: 0}
   wall: {fileID: 0}
+--- !u!1 &3927847715187779394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5140645406139132350}
+  m_Layer: 11
+  m_Name: PortalPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5140645406139132350
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927847715187779394}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -1, w: 0}
+  m_LocalPosition: {x: 10.453756, y: 6.8312507, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4432558222537426126}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4199041814939958616
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,7 +496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  receiver: {fileID: 8598839055107941996}
+  otherPortal: {fileID: 0}
   wall: {fileID: 0}
 --- !u!1 &6667363883811476192
 GameObject:
@@ -469,6 +532,7 @@ Transform:
   - {fileID: 3003064140948699633}
   - {fileID: 8152781481644183433}
   - {fileID: 8598839055107941996}
+  - {fileID: 2143198337891370712}
   m_Father: {fileID: 4636616737917676188}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &2970098892900705248

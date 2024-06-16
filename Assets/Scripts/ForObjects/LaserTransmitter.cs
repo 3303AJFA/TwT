@@ -6,9 +6,15 @@ public class LaserTransmitter : MonoBehaviour
     private LaserController _laserController;
     
     public Transform point;
+    private Renderer rendererTransmitter;
     
     private GameObject _cloneObject;
     private bool _isTransmit;
+
+    private void Awake()
+    {
+        rendererTransmitter = transform.gameObject.GetComponent<Renderer>();
+    }
 
     void FixedUpdate()
     {
@@ -34,6 +40,19 @@ public class LaserTransmitter : MonoBehaviour
             if (_laserController == null) _laserController = other.collider.GetComponent<LaserController>();
             
             if (!_laserController.laserHitPlayer) CloneObject(other);
+            
+            if (rendererTransmitter != null && rendererTransmitter.materials.Length >= 2)
+            {
+                // Получение второго материала
+                Material transmitterMaterial = rendererTransmitter.materials[1];
+
+                // Включение Emission
+                transmitterMaterial.EnableKeyword("_EMISSION");
+            }
+            else
+            {
+                Debug.LogWarning("Объект не имеет Renderer или второго материала.");
+            }
             
             _isTransmit = true;
         }
@@ -72,6 +91,19 @@ public class LaserTransmitter : MonoBehaviour
                 Destroy(_cloneObject);
                 _isTransmit = false;
             }
+        }
+        
+        if (rendererTransmitter != null && rendererTransmitter.materials.Length >= 2)
+        {
+            // Получение второго материала
+            Material transmitterMaterial = rendererTransmitter.materials[1];
+
+            // Включение Emission
+            transmitterMaterial.DisableKeyword("_EMISSION");
+        }
+        else
+        {
+            Debug.LogWarning("Объект не имеет Renderer или второго материала.");
         }
     }
 

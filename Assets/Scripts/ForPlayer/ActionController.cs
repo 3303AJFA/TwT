@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -146,7 +145,7 @@ public class ActionController : MonoBehaviour
         if (Physics.Raycast(transform.position, 2 * (holdParent.position - transform.position), out hit, pickUpRange))
         {
             Rigidbody throwRigidbody = hit.transform.gameObject.GetComponent<Rigidbody>();
-            if (throwRigidbody != null)
+            if (throwRigidbody != null && throwRigidbody.CompareTag("Interactive"))
             {
                 float finalThrowForce = CalculateThrowForce();
                 throwRigidbody.AddForce(transform.forward * finalThrowForce, ForceMode.Impulse);
@@ -164,7 +163,7 @@ public class ActionController : MonoBehaviour
     
     private float CalculateThrowForce()
     {
-        return Mathf.Clamp(_currentChargeTime, 0f, maxChargeTime) * throwForce;  // Добавлено: рассчет силы броска на основе зарядки
+        return Mathf.Clamp(_currentChargeTime, 0f, maxChargeTime) * throwForce;  // рассчет силы броска на основе зарядки
     }
 
     private void StartCharging()

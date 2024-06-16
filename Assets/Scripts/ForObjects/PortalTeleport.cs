@@ -22,69 +22,96 @@ public class PortalTeleport : MonoBehaviour
 
     private void Update()
     {
-        Teleport();
-    }
-
-    private void Teleport()
-    {
         if (playerIsOverlapping)
         {
-            Vector3 portalToPlayer = player.position - transform.position;
-            float dotProduct = Vector3.Dot(transform.up, portalToPlayer);
-
-            if (dotProduct < 0f)
-            {
-                float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.rotation);
-                rotationDiff += 180;
-                player.Rotate(Vector3.up, rotationDiff);
-
-                Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToPlayer;
-                player.position = otherPortal.position + positionOffset;
-
-                playerIsOverlapping = false;
-            }
+            TeleportPlayer();
         }
-
+        
         if (objectIsOverlapping)
         {
-            Vector3 portalToObject = _teleportedObject.transform.position - transform.position;
-            float dotProduct = Vector3.Dot(transform.up, portalToObject);
+            TeleportObject();
+        }
+    }
 
-            if (dotProduct < 0f)
+    private void TeleportPlayer()
+    {
+        Vector3 portalToPlayer = player.position - transform.position;
+        float dotProduct = Vector3.Dot(transform.up, portalToPlayer);
+
+        if (dotProduct < 0f)
+        {
+            float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.rotation);
+            rotationDiff += 180;
+            player.Rotate(Vector3.up, rotationDiff);
+
+            Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToPlayer;
+            player.position = new Vector3(otherPortal.position.x, otherPortal.position.y, otherPortal.position.z)  + positionOffset;
+
+            Debug.Log("Player Teleport");
+            playerIsOverlapping = false;
+        }
+    }
+    
+    private void TeleportObject()
+    {
+        if (_teleportedObject == null) return;
+        
+        Vector3 portalToObject = _teleportedObject.transform.position - transform.position;
+        float dotProduct = Vector3.Dot(transform.up, portalToObject);
+
+        if (dotProduct < 0f)
+        {
+            // 1. Рассчитываем точку выхода
+            Vector3 positionOffset = otherPortal.TransformPoint(transform.InverseTransformPoint(_teleportedObject.transform.position));
+            
+            // 2. Телепортируем объект
+            _teleportedObject.transform.position = positionOffset;
+            
+            // 3. Поворачиваем объект
+            _teleportedObject.transform.rotation *= rotationOffset;
+            
+            Rigidbody rb = _teleportedObject.GetComponent<Rigidbody>();
+            if (rb != null)
             {
-                float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.rotation);
-                rotationDiff += 180;
-                _teleportedObject.transform.Rotate(Vector3.up, rotationDiff);
-
-                Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToObject;
-                _teleportedObject.transform.position = otherPortal.position + positionOffset;
-
-                objectIsOverlapping = false;
+                Vector3 velocityOffset = otherPortal.TransformDirection(transform.InverseTransformDirection(rb.velocity));
+                rb.velocity = velocityOffset;
             }
+            
+            Debug.Log("Object Teleport");
+
+            objectIsOverlapping = false;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         var m_collider = wall.GetComponentsInChildren<Collider>();
-        for (int i = 0; i < m_collider.Length; i++)
-        {
-            m_collider[i].isTrigger = true;
-        }
         
         if (other.CompareTag("Player"))
         {
+            foreach (var collider in m_collider)
+            {
+                collider.isTrigger = true;
+            }
+            
             playerIsOverlapping = true;
         }
         
         if (other.CompareTag("Interactive"))
         {
+            foreach (var collider in m_collider)
+            {
+                collider.isTrigger = true;
+            }
+            
             if (ActionController.GetInstance().heldObject != null)
             {
                 CloneObject(other);
             }
             else
             {
+                CloneObject(other);
+                
                 objectIsOverlapping = true;
                 
                 _teleportedObject = other.gameObject;
@@ -94,6 +121,11 @@ public class PortalTeleport : MonoBehaviour
         
         if (other.CompareTag("Laser"))
         {
+            foreach (var collider in m_collider)
+            {
+                collider.isTrigger = true;
+            }
+            
             CloneObject(other);
         }
     }
@@ -143,14 +175,17 @@ public class PortalTeleport : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         var m_collider = wall.GetComponentsInChildren<Collider>();
-        for (int i = 0; i < m_collider.Length; i++)
-        {
-            m_collider[i].isTrigger = false;
-        }
+        
+        
         
         if (other.CompareTag("Player"))
         {
             playerIsOverlapping = false;
+            
+            foreach (var collider in m_collider)
+            {
+                collider.isTrigger = false;
+            }
         }
 
         if (other.CompareTag("Interactive"))
@@ -166,6 +201,14 @@ public class PortalTeleport : MonoBehaviour
                 objectIsOverlapping = false;
                 
                 _teleportedObject = null;
+            }
+            
+            if (ActionController.GetInstance().heldObject == null)
+            {
+                foreach (var collider in m_collider)
+                {
+                    collider.isTrigger = false;
+                }
             }
         }
 
